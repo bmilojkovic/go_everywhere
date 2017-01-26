@@ -1,0 +1,29 @@
+<html>
+	<head>
+		<script src="https://code.jquery.com/jquery-3.1.1.min.js"></script>
+		
+		<script type="text/javascript">
+		
+			function saljiA() {
+				text = $.getJSON("https://localhost/ge_backend/akcija.php?id=1", function (data) {
+						$("#p_tekst").html(data);
+				});
+				
+			}
+			
+			function saljiB() {
+				text = $.getJSON("https://localhost/ge_backend/akcija.php?id=2", function (data) {
+						$("#p_tekst").html(data);
+				});
+			}
+		</script>
+	</head>
+	<body>
+		<h1>Moja FB igra</h1>
+		
+		<button onclick="saljiA();">Dugme 1</button>
+		<button onclick="saljiB();">Dugme 2</button>
+		
+		<p id="p_tekst"></p>
+	</body>
+</html>
