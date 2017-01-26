@@ -1,2 +1,2 @@
-# go_everywhere
+# Go everywhere
 A platform for playing go
