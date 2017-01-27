@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: localhost
--- Generation Time: Jan 27, 2017 at 01:56 PM
+-- Generation Time: Jan 27, 2017 at 03:54 PM
 -- Server version: 10.1.20-MariaDB
 -- PHP Version: 7.0.15
 
@@ -102,12 +102,19 @@ CREATE TABLE `game` (
   `moves` text COLLATE utf8_unicode_ci NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 
+-- --------------------------------------------------------
+
 --
--- Dumping data for table `game`
+-- Table structure for table `player`
 --
 
-INSERT INTO `game` (`id`, `chattable_id`, `room_id`, `player_white_id`, `player_black_id`, `name`, `type`, `status`, `time_rules`, `board_width`, `board_height`, `handicap`, `komi`, `result`, `moves`) VALUES
-(1, 2, 1, 1, 2, NULL, 'a', 'b', 'ccc', 19, 19, NULL, 6.5, NULL, 'potezi');
+CREATE TABLE `player` (
+  `id` bigint(20) UNSIGNED NOT NULL,
+  `user_id` bigint(20) UNSIGNED NOT NULL,
+  `name` varchar(100) COLLATE utf8_unicode_ci NOT NULL,
+  `go_rank` char(4) COLLATE utf8_unicode_ci NOT NULL,
+  `domain` char(3) COLLATE utf8_unicode_ci NOT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 
 -- --------------------------------------------------------
 
@@ -136,19 +143,18 @@ INSERT INTO `room` (`id`, `chattable_id`, `name`) VALUES
 
 CREATE TABLE `user` (
   `id` bigint(20) UNSIGNED NOT NULL,
-  `facebook_id` bigint(20) UNSIGNED NOT NULL,
+  `facebook_id` bigint(20) UNSIGNED DEFAULT NULL,
   `display_name` varchar(20) COLLATE utf8_unicode_ci NOT NULL,
-  `email` varchar(50) COLLATE utf8_unicode_ci NOT NULL,
-  `go_rank` char(4) COLLATE utf8_unicode_ci DEFAULT NULL
+  `email` varchar(50) COLLATE utf8_unicode_ci NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 
 --
 -- Dumping data for table `user`
 --
 
-INSERT INTO `user` (`id`, `facebook_id`, `display_name`, `email`, `go_rank`) VALUES
-(1, 123, 'UserA', 'email@email.com', NULL),
-(2, 456, 'UserB', 'email@email.com', NULL);
+INSERT INTO `user` (`id`, `facebook_id`, `display_name`, `email`) VALUES
+(1, 123, 'UserA', 'email@email.com'),
+(2, 456, 'UserB', 'email@email.com');
 
 --
 -- Indexes for dumped tables
@@ -180,8 +186,15 @@ ALTER TABLE `game`
   ADD PRIMARY KEY (`id`),
   ADD KEY `chattable_id` (`chattable_id`),
   ADD KEY `room_id` (`room_id`),
-  ADD KEY `player_white_id` (`player_white_id`),
-  ADD KEY `player_black_id` (`player_black_id`);
+  ADD KEY `game_ibfk_3` (`player_white_id`),
+  ADD KEY `game_ibfk_4` (`player_black_id`);
+
+--
+-- Indexes for table `player`
+--
+ALTER TABLE `player`
+  ADD PRIMARY KEY (`id`),
+  ADD KEY `user_id` (`user_id`);
 
 --
 -- Indexes for table `room`
@@ -216,6 +229,11 @@ ALTER TABLE `chat_line`
 ALTER TABLE `game`
   MODIFY `id` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=2;
 --
+-- AUTO_INCREMENT for table `player`
+--
+ALTER TABLE `player`
+  MODIFY `id` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT;
+--
 -- AUTO_INCREMENT for table `room`
 --
 ALTER TABLE `room`
@@ -247,8 +265,14 @@ ALTER TABLE `chat_room`
 ALTER TABLE `game`
   ADD CONSTRAINT `game_ibfk_1` FOREIGN KEY (`chattable_id`) REFERENCES `chattable` (`id`),
   ADD CONSTRAINT `game_ibfk_2` FOREIGN KEY (`room_id`) REFERENCES `room` (`id`),
-  ADD CONSTRAINT `game_ibfk_3` FOREIGN KEY (`player_white_id`) REFERENCES `user` (`id`),
-  ADD CONSTRAINT `game_ibfk_4` FOREIGN KEY (`player_black_id`) REFERENCES `user` (`id`);
+  ADD CONSTRAINT `game_ibfk_3` FOREIGN KEY (`player_white_id`) REFERENCES `player` (`id`),
+  ADD CONSTRAINT `game_ibfk_4` FOREIGN KEY (`player_black_id`) REFERENCES `player` (`id`);
+
+--
+-- Constraints for table `player`
+--
+ALTER TABLE `player`
+  ADD CONSTRAINT `player_ibfk_1` FOREIGN KEY (`user_id`) REFERENCES `user` (`id`);
 
 --
 -- Constraints for table `room`
