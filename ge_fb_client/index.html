@@ -1,6 +1,6 @@
 <html>
 	<head>
-		<script src="https://code.jquery.com/jquery-3.1.1.min.js"></script>
+		<script src="https://code.jquery.com/jquery-3.1.1.min.js"></script>	
 		
 		<script type="text/javascript">
 		
@@ -16,14 +16,77 @@
 						$("#p_tekst").html(data);
 				});
 			}
+			
 		</script>
 	</head>
 	<body>
-		<h1>Moja FB igra</h1>
+		<script>
+	
+			function onLogin(response) {
+			  if (response.status == 'connected') {
+			    FB.api('/me?fields=first_name', function(data) {
+			      var welcomeBlock = document.getElementById('fb-welcome');
+			      welcomeBlock.innerHTML = 'Hello, ' + data.first_name + '!';
+			    });
+			    
+			    FB.api('/me/friends', function(result) {
+			    	var friend_block = document.getElementById('friend_list');
+			    	
+			    	console.log(result);
+			    	result.data.forEach(function(elem){
+			    		console.log(elem);
+			    		var newLi = document.createElement('li');
+			    		newLi.innerHTML = elem.name;
+			    		
+			    		friend_block.appendChild(newLi);
+			    	});
+			    });
+			  }
+			}		  
+		  
+		  window.fbAsyncInit = function() {
+		    FB.init({
+		      appId      : '801584073328158',
+		      xfbml      : true,
+		      version    : 'v2.8'
+		    });
+		    FB.AppEvents.logPageView();
+		    
+		    FB.getLoginStatus(function(response) {
+			  // Check login status on load, and if the user is
+			  // already logged in, go directly to the welcome message.
+			  if (response.status == 'connected') {
+			    onLogin(response);
+			  } else {
+			    // Otherwise, show Login dialog first.
+			    FB.login(function(response) {
+			      onLogin(response);
+			    }, {scope: 'user_friends, email'});
+			  }
+			});
+		  };
+		
+		  (function(d, s, id){
+		     var js, fjs = d.getElementsByTagName(s)[0];
+		     if (d.getElementById(id)) {return;}
+		     js = d.createElement(s); js.id = id;
+		     js.src = "//connect.facebook.net/en_US/sdk.js";
+		     fjs.parentNode.insertBefore(js, fjs);
+		   }(document, 'script', 'facebook-jssdk'));
+		   		  
+		  
+			
+		</script>	
+		<h1>Moja FB igra 29</h1>
 		
 		<button onclick="saljiA();">Dugme 1</button>
 		<button onclick="saljiB();">Dugme 2</button>
 		
 		<p id="p_tekst" style="Color: green;"></p>
+		<p id="fb-welcome"></p>
+		
+		<ol id="friend_list">
+					
+		</ol>
 	</body>
 </html>
