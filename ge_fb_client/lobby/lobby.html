@@ -1,0 +1,107 @@
+<html>
+	<head>
+		<script src="https://code.jquery.com/jquery-3.1.1.min.js"></script>
+		<link rel="stylesheet" type="text/css" href="style.css">
+		<script type="text/javascript">
+		<link href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" rel="stylesheet"/>
+		<link href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-table/1.11.0/bootstrap-table.min.css" rel="stylesheet"/>
+			
+		
+	
+		</script>
+	</head>
+	<body>
+		<div class="containter">
+		<!-- CHAT -->
+		<div class="chat">
+		
+			
+			
+		</div>
+			<div class="lobby">
+		<!-- MAIN, KREIRAJ IGRU I ISPISATI POSTOJECE PARTIJE KOJE KORISNIK MOZE DA PRIHVATI -->
+		<div class="main">
+				<div class="scrollable">
+					<table width="400px" data-toggle="table" data-sort-name="stargazers_count" data-sort-order="desc">
+						<thead>
+							<tr> 
+							 <th data-field="Accept" data-sortable="true"> </th>
+							 <th data-field="Name" data-sortable="true"> Name </th>
+							 <th data-field="Player" data-sortable="true"> Player </th> 
+							 <th data-field="Rank" data-sortable="true"> Rank </th> 
+							 <th data-field="Size" data-sortable="true"> Size</th>
+							 <th data-field="Time" data-sortable="true"> Time </th>
+							 <th data-field="Handicap" data-sortable="true"> Handicap </th>
+							</tr>
+						</thead>
+						 <tbody>
+							<tr>
+								<td><button class="acceptGameBtn">Accept</button></td><td>bla</td><td>bla</td><td>2</td><td>9</td><td>bla</td><td>bla</td>
+								<tr>
+								<td><button class="acceptGameBtn">Accept</button></td><td>bla</td><td>bla</td><td>3</td><td>13</td><td>bla</td><td>bla</td>
+								</tr>
+								<tr>
+								<td><button class="acceptGameBtn">Accept</button></td><td>bla</td><td>bla</td><td>3</td><td>19</td><td>bla</td><td>bla</td>
+								</tr>
+								<tr>
+								<td><button class="acceptGameBtn">Accept</button></td><td>bla</td><td>bla</td><td>3</td><td>19</td><td>bla</td><td>bla</td>
+								</tr>
+								<tr>
+								<td><button class="acceptGameBtn">Accept</button></td><td>bla</td><td>bla</td><td>3</td><td>19</td><td>bla</td><td>bla</td>
+								</tr>
+								<tr>
+								<td><button class="acceptGameBtn">Accept</button></td><td>bla</td><td>bla</td><td>3</td><td>19</td><td>bla</td><td>bla</td>
+								</tr>
+							</tr>
+						 </tbody>
+					</table>
+				</div>
+				
+			<input type="button" class="playbtn" value="Create a game!" onclick="createGame();">
+			
+		</div>
+		<!-- LISTA PRIJATELJA -->
+		 <div class="friendlist" >
+			
+			<div class="friend">
+				<p id="friendName">Martina J</p>
+				<img src="slika.jpg" id="friendPic">
+				<div class="ch">
+					<p id="friendXP">360xp</p>
+					<input id="challengeBtn" type="button" value="Challenge!" onclick="friendChallenge()" >
+				</div>
+			</div>
+		
+			<div class="friend">
+				<p id="friendName">Martina J</p>
+				<img src="slika2.jpg" id="friendPic">
+				<div class="ch">
+					<p id="friendXP">360xp</p>
+					<input id="challengeBtn" type="button" value="Challenge!" onclick="friendChallenge()" >
+				</div>
+			</div>
+		
+			<div class="friend">
+				<p id="friendName">Martina J</p>
+				<img src="slika.jpg" id="friendPic">
+				<div class="ch">
+					<p id="friendXP">360xp</p>
+					<input id="challengeBtn" type="button" value="Challenge!" onclick="friendChallenge()" >
+				</div>
+			</div>
+		
+			<button class="inviteBtn" style="vertical-align:middle" onclick="invite()"><span>Invite!</span></button>
+	
+		
+			</div>
+					
+			</div>
+		</div>
+		
+		
+		<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.1.1/jquery.min.js"></script>
+		<script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-table/1.11.0/bootstrap-table.min.js"></script>
+
+		
+	</body>
+</html>
