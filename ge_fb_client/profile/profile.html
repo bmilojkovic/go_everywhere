@@ -45,6 +45,15 @@
 	    $(function(){
        	$("#ge_nav").load("navbar.html");
        });  
+       
+       function getUserData() {
+			$.getJSON("https://localhost/ge_backend/get_my_profile.php", function(data) {
+			
+				console.log(data);
+			
+			});       
+       
+       }
   </script>
 </head>
 <body>
