@@ -1,55 +1,85 @@
 <?php
 
-include 'db.inc';
+include 'player.inc';
 
-class GE_User {
+class GE_User implements JsonSerializable {
 
-	private $ge_id;
+	private $ge_user_id;
 	private $display_name;
 	
 	private $fb_id;
 	private $email;
 	
+	private $players;
+	
 	public function __construct($fb_id, $provided_name, $provided_email, $ge_db_link) {
 		$this->fb_id = $fb_id;
 		
 		$get_user_q = "SELECT id,display_name,email FROM user WHERE facebook_id=?";
-		if (!($statement = $ge_db_link->prepare($get_user_q))) {
-			echo "SELECT failed: " . $ge_db_link->error;
-		}
+		($statement = $ge_db_link->prepare($get_user_q)) or die("Prepare SELECT failed: " . $ge_db_link->error);
+		
 		$statement->bind_param("i", $fb_id);
-		if (!$statement->execute()) {
-			echo "Failed in execute SELECT: " . $ge_db_link->error;
-		}
+		$statement->execute() or die("Execute SELECT failed: " . $ge_db_link->error);
+		
 		$statement->bind_result($my_id, $my_display_name, $my_email);
 		
+		$get_players = false;
 		if ($statement->fetch()) { //found user in DB -> populate with values from there
-			$this->ge_id = $my_id;
+			$this->ge_user_id = $my_id;
 			$this->display_name = $my_display_name;
 			$this->email = $my_email;
+			
+			$get_players = true;
+			
 		} else { //user was not in DB -> add him, and use provided values
+			$statement->close();		
+				
 			$add_user_q = "INSERT INTO user (facebook_id, display_name, email) VALUES (?,?,?)";
-			if (!($statement = $ge_db_link->prepare($add_user_q))) {
-				echo "INSERT failed: " . $ge_db_link->error;
-			}
+			($statement = $ge_db_link->prepare($add_user_q)) or die("Prepare INSERT failed: " . $ge_db_link->error);
 			$statement->bind_param("iss", $fb_id, $provided_name, $provided_email);
 			
-			if (!$statement->execute()) {
-				die("Could not add user to DB. Aborting.");
-			}
+			$statement->execute() or die("Execute INSERT failed:" . $ge_db_link->error);
 			
-			$this->ge_id = $ge_db_link->insert_id;
+			$this->ge_user_id = $ge_db_link->insert_id;
 			$this->display_name = $provided_name;
 			$this->email = $provided_email;
+			
+			//make new player profile for our domain
+			$new_player = GE_Player::make_new_player($provided_name, null, "GOE", $this, $ge_db_link);
+			$this->players[$new_player->get_domain()] = $new_player;
+		}
+		
+		$statement->close();
+		if ($get_players) {
+			$get_players_q = "SELECT p.id, p.name, p.go_rank, p.domain
+									FROM player AS p 
+									JOIN user AS u
+									ON p.user_id=u.id
+									WHERE u.id=?";
+			
+			($players_statement = $ge_db_link->prepare($get_players_q)) or die("Prepare JOIN failed: " . $ge_db_link->error);
+			$players_statement->bind_param("i", $my_id);
+			
+			$players_statement->execute() or die("Execute JOIN failed: " . $ge_db_link->error);
+			$players_statement->bind_result($player_id, $player_name, $player_rank, $player_domain);
+						
+			while($players_statement->fetch()) {
+				
+				$new_player = GE_Player::make_player($player_id, $player_name, $player_rank, $player_domain, $this);
+				$this->players[$player_domain] = $new_player;
+			}
+			
+			//make new GOE profile if it is missing
 		}
 	}
 	
-	public function get_ge_id() {
-		return $this->ge_id;
+	public function get_ge_user_id() {
+		return $this->ge_user_id;
 	}
 	
-	public function to_json() {
-		return json_encode(get_object_vars($this));
+	public function jsonSerialize() {
+		$vars = get_object_vars($this);
+		return $vars;
 	}
 	
 }

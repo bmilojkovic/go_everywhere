@@ -1,10 +1,13 @@
 <?php
 session_start();
 
+include 'user.inc';
+
 if (!isset($_SESSION['user'])) {
 	die("User is not logged in? Aborting.");
 }
 
-echo $_SESSION['user']->to_json();
+$my_profile = unserialize($_SESSION['user']);
+echo json_encode($my_profile);
 
 ?>

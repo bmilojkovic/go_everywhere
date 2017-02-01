@@ -15,6 +15,7 @@
 					},
 					success: function(data) {
 						console.log('Logged in ' + data);
+						printProfile();
 					},
 					error: function(jqXHR, text, error) {
 						console.log('error in ajax: ' + text + " " + error);
@@ -23,13 +24,26 @@
 				
 			}
 			
+			function printProfile() {
+				$.ajax({
+					type: 'GET',
+					url: 'https://localhost/ge_backend/get_my_profile.php',
+					success: function(data) {
+						$("#fb-welcome").html(data);
+					},
+					error: function(jqXHR, text, error) {
+						console.log('error in ajax: ' + text + " " + error);
+					} 
+				});
+			}
+			
 		</script>
 	</head>
 	<body>
 		<script>
-			logMeIn(123, "Name", "email@site.com");
+			logMeIn(1, "Name", "email@site.com");
 		</script>	
-		<h1>Moja FB igra 30</h1>
+		<h1>Moja FB igra 31</h1>
 		
 		<p id="fb-welcome"></p>
 		
