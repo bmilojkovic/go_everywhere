@@ -7,11 +7,11 @@
 			function logMeIn(fb_id, name, email) {
 				$.ajax({
 					type: 'POST',
-					url: 'https://localhost/ge_backend/user_login.php',
+					url: 'https://localhost/ge_backend/user/user_login.php',
 					data: {
-					'fb_id' : fb_id,
-					'provided_name' : name,
-					'provided_email' : email
+					fb_id : fb_id,
+					provided_name : name,
+					provided_email : email
 					},
 					success: function(data) {
 						console.log('Logged in ' + data);
@@ -27,7 +27,7 @@
 			function printProfile() {
 				$.ajax({
 					type: 'GET',
-					url: 'https://localhost/ge_backend/get_my_profile.php',
+					url: 'https://localhost/ge_backend/user/get_my_profile.php',
 					success: function(data) {
 						$("#fb-welcome").html(data);
 					},
@@ -37,18 +37,72 @@
 				});
 			}
 			
+			function sendChat() {
+				chatText = $("#chat-line").val();
+				//console.log(chatText);
+				if (chatText !== "") {
+					$.ajax({
+						type: "POST",
+						url: "https://localhost/ge_backend/chat/chat_action.php",
+						data: {
+							action: 'add',
+							chat_name: 'test',
+							text: chatText
+						},
+						success: function(data) {
+							console.log('Added line');
+						},
+						error: function(jqXHR, text, error) {
+							console.log('error in ajax: ' + text + " " + error);
+						} 
+					
+					});
+				}
+			} 			
+			
+			function getChat() {
+				//time = Math.floor(Date.now()) - 1000;
+				
+				$.ajax({
+					type: "POST",
+					url: "https://localhost/ge_backend/chat/chat_action.php",
+					data: {
+						action: 'get_chat',
+						chat_name: 'test'
+					},
+					success: function(data){
+						if (data !== "null") {						
+							$("#chat-area").html(data);  
+						}
+						//console.log(data);
+					},
+					error: function(jqXHR, text, error) {
+						console.log('error in ajax: ' + text + " " + error);
+					} 
+				})
+			}
+			
+			setInterval(getChat, 1000);
+			
 		</script>
 	</head>
 	<body>
 		<script>
 			logMeIn(1, "Name", "email@site.com");
 		</script>	
-		<h1>Moja FB igra 31</h1>
+		<h1>Moja FB igra 34</h1>
 		
 		<p id="fb-welcome"></p>
 		
 		<ol id="friend_list">
 					
 		</ol>
+		
+		<p id="chat-area">
+		
+		</p>
+		
+		<input type="text" id="chat-line">
+		<button onclick="sendChat();">Chat</button>
 	</body>
 </html>

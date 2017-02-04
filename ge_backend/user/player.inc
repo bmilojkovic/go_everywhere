@@ -2,7 +2,7 @@
 
 class GE_Player implements JsonSerializable {
 	
-	private $ge_player_id;
+	private $id;
 	private $name;
 	private $rank;
 	private $domain;
@@ -12,36 +12,36 @@ class GE_Player implements JsonSerializable {
 		
 	}
 	
-	public static function make_player($ge_player_id, $name, $rank, $domain, $user) {
+	public static function make_player($id, $name, $rank, $domain, $user) {
 		$instance = new self();		
 		
-		$instance->make($ge_player_id, $name, $rank, $domain, $user);
+		$instance->make($id, $name, $rank, $domain, $user);
 		
 		return $instance;
 	} 	
 	
-	public static function make_new_player($name, $rank, $domain, $user, $ge_db_link) {
+	public static function make_new_player($name, $rank, $domain, $user, $db_link) {
 		$instance = new self();
 		
-		$instance->make_new($name, $rank, $domain, $user, $ge_db_link);
+		$instance->make_new($name, $rank, $domain, $user, $db_link);
 		
 		return $instance;
 	}
 	
-	private function make($ge_player_id, $name, $rank, $domain, $user) {
-		$this->ge_player_id = $ge_player_id;
+	private function make($id, $name, $rank, $domain, $user) {
+		$this->id = $id;
 		$this->name = $name;
 		$this->rank = $rank;
 		$this->domain = $domain;
 		$this->user = $user;
 	}
 	
-	private function make_new($name, $rank, $domain, $user, $ge_db_link) {
+	private function make_new($name, $rank, $domain, $user, $db_link) {
 		$check_q = "SELECT id FROM player WHERE domain=? AND user_id=?";
-		($check_st = $ge_db_link->prepare($check_q)) or die("Prepare SELECT failed: " . $ge_db_link->error);
-		$user_id = $user->get_ge_user_id();
+		($check_st = $db_link->prepare($check_q)) or die("Prepare SELECT failed: " . $db_link->error);
+		$user_id = $user->get_id();
 		$check_st->bind_param("si", $domain, $user_id);
-		$check_st->execute() or die("Execute SELECT failed: " . $ge_db_link->error);	
+		$check_st->execute() or die("Execute SELECT failed: " . $db_link->error);	
 		
 		if ($check_st->fetch()) {
 			die("There already is a player for this user in this domain. Abort.");
@@ -55,10 +55,10 @@ class GE_Player implements JsonSerializable {
 		$check_st->close();		
 		
 		$add_player_q = "INSERT INTO player (user_id,name,go_rank,domain) VALUES(?,?,?,?)";
-		($add_st = $ge_db_link->prepare($add_player_q)) or die("Prepare INSERT failed: " . $ge_db_link->error);
+		($add_st = $db_link->prepare($add_player_q)) or die("Prepare INSERT failed: " . $db_link->error);
 		$add_st->bind_param("isss", $user_id, $name, $rank, $domain);
 		
-		$add_st->execute() or die("Execute INSERT failed: " . $ge_db_link->error);
+		$add_st->execute() or die("Execute INSERT failed: " . $db_link->error);
 		
 		$add_st->close();
 	}
@@ -75,7 +75,7 @@ class GE_Player implements JsonSerializable {
 		//gotta do this manually to avoid recursion :(
 		return [
 			'player' => [
-				'ge_player_id' => $this->ge_player_id,
+				'id' => $this->id,
 				'name' => $this->name,
 				'rank' => $this->rank,
 				'domain' => $this->domain
