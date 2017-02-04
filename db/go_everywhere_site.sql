@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: localhost
--- Generation Time: Jan 27, 2017 at 03:54 PM
+-- Generation Time: Feb 04, 2017 at 12:42 PM
 -- Server version: 10.1.20-MariaDB
 -- PHP Version: 7.0.15
 
@@ -47,7 +47,7 @@ INSERT INTO `chattable` (`id`) VALUES
 CREATE TABLE `chat_line` (
   `id` bigint(20) UNSIGNED NOT NULL,
   `chat_room_id` bigint(20) UNSIGNED NOT NULL,
-  `timestamp` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  `line_datetime` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP,
   `text` text COLLATE utf8_unicode_ci NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 
@@ -55,9 +55,19 @@ CREATE TABLE `chat_line` (
 -- Dumping data for table `chat_line`
 --
 
-INSERT INTO `chat_line` (`id`, `chat_room_id`, `timestamp`, `text`) VALUES
-(1, 1, '2017-01-27 13:52:49', 'room blabla'),
-(2, 2, '2017-01-27 13:52:49', 'game blabla');
+INSERT INTO `chat_line` (`id`, `chat_room_id`, `line_datetime`, `text`) VALUES
+(1, 1, '2017-02-04 09:47:59', 'qwe'),
+(2, 1, '2017-02-04 10:00:05', 'qwe'),
+(3, 1, '2017-02-04 10:01:12', 'qwe'),
+(4, 1, '2017-02-04 10:01:34', 'asd'),
+(5, 1, '2017-02-04 10:01:59', 'asd'),
+(6, 1, '2017-02-04 10:03:30', 'zzz'),
+(7, 1, '2017-02-04 10:03:46', 'zzz'),
+(8, 1, '2017-02-04 10:04:40', 'zzz'),
+(9, 1, '2017-02-04 10:05:01', 'zzz'),
+(10, 1, '2017-02-04 10:05:05', 'zzzeee'),
+(11, 1, '2017-02-04 10:05:16', 'zzzeeeaa'),
+(12, 1, '2017-02-04 10:20:49', 'QWE');
 
 -- --------------------------------------------------------
 
@@ -75,8 +85,8 @@ CREATE TABLE `chat_room` (
 --
 
 INSERT INTO `chat_room` (`id`, `name`) VALUES
-(1, 'Room chat'),
-(2, 'Game chat');
+(1, 'test'),
+(2, 'lobby');
 
 -- --------------------------------------------------------
 
@@ -112,9 +122,17 @@ CREATE TABLE `player` (
   `id` bigint(20) UNSIGNED NOT NULL,
   `user_id` bigint(20) UNSIGNED NOT NULL,
   `name` varchar(100) COLLATE utf8_unicode_ci NOT NULL,
-  `go_rank` char(4) COLLATE utf8_unicode_ci NOT NULL,
+  `go_rank` char(4) COLLATE utf8_unicode_ci DEFAULT NULL,
   `domain` char(3) COLLATE utf8_unicode_ci NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+
+--
+-- Dumping data for table `player`
+--
+
+INSERT INTO `player` (`id`, `user_id`, `name`, `go_rank`, `domain`) VALUES
+(1, 1, 'pro', NULL, 'GOE'),
+(2, 2, 'Name', NULL, 'GOE');
 
 -- --------------------------------------------------------
 
@@ -127,13 +145,6 @@ CREATE TABLE `room` (
   `chattable_id` bigint(20) UNSIGNED NOT NULL,
   `name` varchar(100) COLLATE utf8_unicode_ci NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
-
---
--- Dumping data for table `room`
---
-
-INSERT INTO `room` (`id`, `chattable_id`, `name`) VALUES
-(1, 1, 'Test room');
 
 -- --------------------------------------------------------
 
@@ -153,8 +164,8 @@ CREATE TABLE `user` (
 --
 
 INSERT INTO `user` (`id`, `facebook_id`, `display_name`, `email`) VALUES
-(1, 123, 'UserA', 'email@email.com'),
-(2, 456, 'UserB', 'email@email.com');
+(1, 1, 'pro', 'ema'),
+(2, 123, 'Name', 'email@site.com');
 
 --
 -- Indexes for dumped tables
@@ -222,22 +233,22 @@ ALTER TABLE `chattable`
 -- AUTO_INCREMENT for table `chat_line`
 --
 ALTER TABLE `chat_line`
-  MODIFY `id` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=3;
+  MODIFY `id` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=13;
 --
 -- AUTO_INCREMENT for table `game`
 --
 ALTER TABLE `game`
-  MODIFY `id` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=2;
+  MODIFY `id` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT;
 --
 -- AUTO_INCREMENT for table `player`
 --
 ALTER TABLE `player`
-  MODIFY `id` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT;
+  MODIFY `id` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=3;
 --
 -- AUTO_INCREMENT for table `room`
 --
 ALTER TABLE `room`
-  MODIFY `id` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=2;
+  MODIFY `id` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT;
 --
 -- AUTO_INCREMENT for table `user`
 --
