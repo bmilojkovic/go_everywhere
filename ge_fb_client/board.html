@@ -5,8 +5,10 @@
 		<script src="board.js"></script> 
 	</head>
 	<body onload="Init();">
+		<img id="board-image" src ="images/board.png" style="visibility: hidden; position: fixed;" />
+	
 		<div id="content">
-			<canvas id="board" width="531" height="531" onclick="PlaceStone();" onmousemove="ShowMovePreview();">
+			<canvas id="board" width="531" height="531" onmousemove="ShowMovePreview();">
 			</canvas>
 		</div>
 		
@@ -14,7 +16,7 @@
 			<div id="game-info">
 				<div class="player-info">
 					<div class="name">
-						<img id="black-stone" src="images/black_stone.svg" alt=":(" width="35" height="35">
+						<img id="black-stone" src="images/black_stone.svg" alt=":(" width="35" height="35" />
 						<b>Black name</b>
 					</div>
 					<div class="time">
@@ -27,7 +29,7 @@
 				
 				<div class="player-info">
 					<div class="name">
-						<img id="white-stone" src="images/white_stone.svg" alt=":(" width="35" height="35">
+						<img id="white-stone" src="images/white_stone.svg" alt=":(" width="35" height="35" />
 						<b>White name</b>
 					</div>
 					<div class="time">
