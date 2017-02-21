@@ -34,7 +34,7 @@ $(document).ready(function () {
 		 $("#challengeFriendList").hide();
 	 });	 
  });
-//not working
+
  $(document).ready(function () {
 	$("#challengeFriendList").autocomplete({
 		//source: "friendList.php"
@@ -47,6 +47,23 @@ $(document).ready(function () {
  });
  
 $(function () {
-	$("#ge_nav").load("navbar.html");
+	$("#ge_nav").load("../profile/navbar.html");
 });
 
+function showRankRestrict() {
+	if($("#restrict").prop("checked"))
+	{
+		$("#min-label").show();
+		$("#max-label").show();
+		$("#rank-min").show();
+		$("#rank-max").show();
+	}
+	else
+	{
+		
+		$("#min-label").hide();
+		$("#max-label").hide();
+		$("#rank-min").hide();
+		$("#rank-max").hide();
+	}
+}

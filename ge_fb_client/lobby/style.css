@@ -408,3 +408,10 @@ table.rank_table th, table.rank_table td
 	width:150px;
 	
 }
+#rank-max, #rank-min, #min-label, #max-label{
+	display:none;
+}
+#room-combo
+{
+	color:beige;
+}

@@ -1,11 +1,11 @@
 -- phpMyAdmin SQL Dump
--- version 4.6.5.1
--- https://www.phpmyadmin.net/
+-- version 4.5.1
+-- http://www.phpmyadmin.net
 --
--- Host: localhost
--- Generation Time: Feb 08, 2017 at 11:41 AM
--- Server version: 10.1.20-MariaDB
--- PHP Version: 7.0.15
+-- Host: 127.0.0.1
+-- Generation Time: Feb 21, 2017 at 11:27 AM
+-- Server version: 10.1.9-MariaDB
+-- PHP Version: 5.6.15
 
 SET SQL_MODE = "NO_AUTO_VALUE_ON_ZERO";
 SET time_zone = "+00:00";
@@ -33,6 +33,22 @@ CREATE TABLE `chat_line` (
   `text` text COLLATE utf8_unicode_ci NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 
+--
+-- Dumping data for table `chat_line`
+--
+
+INSERT INTO `chat_line` (`id`, `chat_room_id`, `line_datetime`, `text`) VALUES
+(1, 2, '2017-02-11 16:40:55', 'cao'),
+(2, 2, '2017-02-11 16:40:57', 'cao'),
+(3, 2, '2017-02-11 16:40:59', 'cao'),
+(4, 2, '2017-02-11 16:41:21', 'cao'),
+(5, 2, '2017-02-11 16:41:22', 'cao'),
+(6, 2, '2017-02-12 19:20:54', 'yyy'),
+(7, 2, '2017-02-12 19:26:33', 'ggg'),
+(8, 2, '2017-02-13 17:54:41', 'sss'),
+(9, 2, '2017-02-13 17:54:42', 'sss'),
+(10, 2, '2017-02-14 18:32:26', 'm');
+
 -- --------------------------------------------------------
 
 --
@@ -50,7 +66,10 @@ CREATE TABLE `chat_room` (
 
 INSERT INTO `chat_room` (`id`, `name`) VALUES
 (1, 'test'),
-(2, 'lobby');
+(2, 'lobby'),
+(3, 'english'),
+(4, 'french'),
+(5, 'korean');
 
 -- --------------------------------------------------------
 
@@ -73,8 +92,21 @@ CREATE TABLE `game` (
   `handicap` int(11) DEFAULT NULL,
   `komi` float NOT NULL,
   `result` char(5) COLLATE utf8_unicode_ci DEFAULT NULL,
-  `moves` text COLLATE utf8_unicode_ci NOT NULL
+  `moves` text COLLATE utf8_unicode_ci NOT NULL,
+  `min_rank` char(4) COLLATE utf8_unicode_ci DEFAULT NULL,
+  `max_rank` char(4) COLLATE utf8_unicode_ci DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+
+--
+-- Dumping data for table `game`
+--
+
+INSERT INTO `game` (`id`, `chat_room_id`, `room_id`, `player_white_id`, `player_black_id`, `name`, `type`, `status`, `time_rules`, `board_width`, `board_height`, `handicap`, `komi`, `result`, `moves`, `min_rank`, `max_rank`) VALUES
+(2, 1, 1, NULL, 1, 'nebitno nesto', '1', 'n', 'bla', 9, 9, NULL, 10, NULL, '', NULL, NULL),
+(4, 1, 1, NULL, 3, 'game 2', 'r', 'n', 'n', 13, 13, NULL, 1, NULL, '', NULL, NULL),
+(6, 1, 1, NULL, 1, 'igra 4', 'r', 'n', 'BY | 01:00 | 5 X 00:20', 13, 13, 1, 1, NULL, '', NULL, NULL),
+(7, 1, 1, 2, 3, 'igra 4', 'r', 's', 'BY|300|4x30', 19, 19, NULL, 1, NULL, '', NULL, NULL),
+(8, 1, 1, 2, 2, 'igra 6', 'r', 's', 'BY|7000|3x40', 9, 9, 1, 2, NULL, '', NULL, NULL);
 
 -- --------------------------------------------------------
 
@@ -90,6 +122,15 @@ CREATE TABLE `player` (
   `domain` char(3) COLLATE utf8_unicode_ci NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 
+--
+-- Dumping data for table `player`
+--
+
+INSERT INTO `player` (`id`, `user_id`, `name`, `go_rank`, `domain`) VALUES
+(1, 1, 'Martina', '25', 'nbt'),
+(2, 2, 'nemanja', NULL, 'nbt'),
+(3, 3, 'Name', NULL, 'GOE');
+
 -- --------------------------------------------------------
 
 --
@@ -99,8 +140,19 @@ CREATE TABLE `player` (
 CREATE TABLE `room` (
   `id` bigint(20) UNSIGNED NOT NULL,
   `chat_room_id` bigint(20) UNSIGNED NOT NULL,
-  `name` varchar(100) COLLATE utf8_unicode_ci NOT NULL
+  `name` varchar(100) COLLATE utf8_unicode_ci NOT NULL,
+  `private` tinyint(1) NOT NULL DEFAULT '0'
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+
+--
+-- Dumping data for table `room`
+--
+
+INSERT INTO `room` (`id`, `chat_room_id`, `name`, `private`) VALUES
+(1, 1, 'soba 1', 0),
+(2, 3, 'english', 0),
+(3, 4, 'french', 0),
+(4, 5, 'korean', 0);
 
 -- --------------------------------------------------------
 
@@ -114,6 +166,15 @@ CREATE TABLE `user` (
   `display_name` varchar(20) COLLATE utf8_unicode_ci NOT NULL,
   `email` varchar(50) COLLATE utf8_unicode_ci NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+
+--
+-- Dumping data for table `user`
+--
+
+INSERT INTO `user` (`id`, `facebook_id`, `display_name`, `email`) VALUES
+(1, NULL, 'maca', 'm@m.m'),
+(2, NULL, 'Nemanja', 'n@n.n'),
+(3, 1, 'Name', 'email@site.com');
 
 --
 -- Indexes for dumped tables
@@ -170,27 +231,32 @@ ALTER TABLE `user`
 -- AUTO_INCREMENT for table `chat_line`
 --
 ALTER TABLE `chat_line`
-  MODIFY `id` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT;
+  MODIFY `id` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=11;
+--
+-- AUTO_INCREMENT for table `chat_room`
+--
+ALTER TABLE `chat_room`
+  MODIFY `id` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=6;
 --
 -- AUTO_INCREMENT for table `game`
 --
 ALTER TABLE `game`
-  MODIFY `id` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT;
+  MODIFY `id` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=9;
 --
 -- AUTO_INCREMENT for table `player`
 --
 ALTER TABLE `player`
-  MODIFY `id` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT;
+  MODIFY `id` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=4;
 --
 -- AUTO_INCREMENT for table `room`
 --
 ALTER TABLE `room`
-  MODIFY `id` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT;
+  MODIFY `id` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=5;
 --
 -- AUTO_INCREMENT for table `user`
 --
 ALTER TABLE `user`
-  MODIFY `id` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT;
+  MODIFY `id` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=4;
 --
 -- Constraints for dumped tables
 --
