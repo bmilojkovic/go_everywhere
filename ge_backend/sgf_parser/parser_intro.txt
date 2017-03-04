@@ -5,11 +5,13 @@
   )
   (
     ;B[aa];W[bb];B[ab]
-    ;W[ba]C[nesto neko; negde]
+    ;W[ba]C[nesto neko; negde];B[da]
   )
 )
 
 PHP funkcija trim() brise razmake sa pocetka i kraja linije
+PHP funkcija explode() omogucava deljenje stringa po nekom separatoru
+
 Stanje zapisujemo kao jednu int promenljivu
 
 Parser cita tekst liniju po liniju
