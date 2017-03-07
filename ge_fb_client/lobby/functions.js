@@ -1,22 +1,22 @@
 function logMeIn(fb_id, name, email) {
-				$.ajax({
-					type: 'POST',
-					url: 'https://localhost/ge_backend/user/user_login.php',
-					data: {
-					fb_id : fb_id,
-					provided_name : name,
-					provided_email : email
-					},
-					success: function(data) {
-						console.log('Logged in ' + data);
-						printProfile();
-					},
-					error: function(jqXHR, text, error) {
-						console.log('error in ajax: ' + text + " " + error);
-					} 
-				});
-				
-			}
+	$.ajax({
+		type: 'POST',
+		url: 'https://localhost/ge_backend/user/user_login.php',
+		data: {
+		fb_id : fb_id,
+		provided_name : name,
+		provided_email : email
+		},
+		success: function(data) {
+			console.log('Logged in ' + data);
+			printProfile();
+		},
+		error: function(jqXHR, text, error) {
+			console.log('error in ajax: ' + text + " " + error);
+		} 
+	});
+	
+}
 			
 function printProfile() {
 	$.ajax({
@@ -32,6 +32,7 @@ function printProfile() {
 }
 			
 function sendChat() {
+	room_id= $("#rooms").val();
 	chatText = $("#chat-line").val();
 	//console.log(chatText);
 	if (chatText !== "") {
@@ -40,7 +41,7 @@ function sendChat() {
 			url: "https://localhost/ge_backend/chat/chat_action.php",
 			data: {
 				action: 'add',
-				chat_name: 'lobby',
+				room_id: room_id,
 				text: chatText
 			},
 			success: function(data) {
@@ -56,13 +57,14 @@ function sendChat() {
 			
 function getChat() {
 	//time = Math.floor(Date.now()) - 1000;
+	room_id= $("#rooms").val();
 	
 	$.ajax({
 		type: "POST",
 		url: "https://localhost/ge_backend/chat/chat_action.php",
 		data: {
 			action: 'get_chat',
-			chat_name: 'lobby'
+			room_id:room_id
 		},
 		success: function(data){
 			if (data !== "null") {						
@@ -80,25 +82,26 @@ setInterval(getChat, 1000);
 
 
 function acceptGame(game_id,acceptor_id) {
-				$.ajax({
-					type: 'POST',
-					url: 'https://localhost/ge_backend/game/game_starter.php',
-					data: {
-					game_id : game_id,
-					acceptor_id : acceptor_id
-					},
-					success: function(data) {
-						$("#"+game_id).parent().parent().remove();
-						alert("game accepted "+data)
-					},
-					error: function(jqXHR, text, error) {
-						alert('error in ajax: ' + text + " " + error);
-					} 
-				});
-				
-			}
+	$.ajax({
+		type: 'POST',
+		url: 'https://localhost/ge_backend/game/game_starter.php',
+		data: {
+		game_id : game_id,
+		acceptor_id : acceptor_id
+		},
+		success: function(data) {
+			$("#"+game_id).parent().parent().remove();
+			alert("game accepted "+data)
+		},
+		error: function(jqXHR, text, error) {
+			alert('error in ajax: ' + text + " " + error);
+		} 
+	});
+	
+}
 	
 function createGame(){
+	room_id=$("#rooms").val();
 	gameName=$("#name").val();
 	boardSize=$("#size").val();
 	challengeType=$("input[name='optradio']:checked").val();
@@ -114,7 +117,7 @@ function createGame(){
 		rank=$("#rank").val();
 	}
 	else{
-		rank="";
+		rank="n";
 	}
 	rules=$("#rules").val();
 	handicap=$("#handicap").val();
@@ -136,8 +139,8 @@ function createGame(){
 			type: "POST",
 			url: "https://localhost/ge_backend/game/game_maker.php",
 			data: {
-				chat_room_id: 1,
-				room_id: 1,
+				
+				room_id: room_id,
 				player_black_id: 1,//fb_id
 				name: gameName,
 				type: rank,
@@ -164,15 +167,20 @@ function createGame(){
 	}
 }
 
+var interrupt;
  $(document).ready(showGames(0));
 function showGames(max_id) {
-
+	if(document.getElementById("rooms") != null)
+		room_id=$("#rooms").val();
+	else
+		room_id=1;
 	$.ajax({
 		type: 'POST',
 		url: 'https://localhost/ge_backend/game/showNewGame.php',
 		data: {
 		fb_id : 2, 
-		max_id:max_id
+		max_id:max_id,
+		room_id:room_id
 		},
 		success: function(data) {
 			//$("#rank_tbody").html(data);
@@ -193,7 +201,7 @@ function showGames(max_id) {
 				tr.append("<td>"+obj.results[i].handicap+"</td>");
 				$("#rank_tbody").append(tr);
 			}
-			setTimeout(function (){showGames(obj.max_id);},1000);
+			interrupt=setTimeout(function (){showGames(obj.max_id);},1000);
 		},
 		error: function(jqXHR, text, error) {
 			alert('error in ajax: ' + text + " " + error);
@@ -202,4 +210,12 @@ function showGames(max_id) {
 	
 }
 
+
+function changeRoom(){
+	$(".chatWrapper").html("");
+	$("#rank_tbody").html("");
+	getChat();
+	clearTimeout(interrupt);
+	showGames(0);
+}
 

@@ -25,6 +25,32 @@ class GE_Chat_Room {
 		
 		return NULL;
 	}
+	public static function get_by_room_id($room_id, $db_link) { //use a cache here
+		$check_q = "SELECT c.name,c.id from chat_room c, room r where r.chat_room_id=c.id and r.id=?";
+		($check_st = $db_link->prepare($check_q)) or die("Prepare SELECT failed: " . $db_link->error);
+		
+		$check_st->bind_param("i", $room_id);
+		$check_st->execute() or die("Execute SELECT failed: " . $db_link->error);	
+
+		$check_st->store_result();
+		$check_st->bind_result($got_name,$chat_room_id);
+		
+		
+		if ($check_st->fetch()) {
+			$instance = new GE_Chat_Room();
+			
+			$instance->id = $chat_room_id;
+			$instance->name = $got_name;
+			
+			return $instance;
+		}
+		
+		return NULL;
+	}
+	public function get_id()
+	{
+		return $this->id;
+	}
 	
 	public static function get_by_name($name, $db_link) { //use a cache here
 		$check_q = "SELECT id FROM chat_room WHERE name=?";
@@ -57,8 +83,8 @@ class GE_Chat_Room {
 			echo "There already is a chat room with this name. Abort.";
 			return false;
 		}		
-		
-		$this->name = $name;
+		//	$instance = new GE_Chat_Room();
+		//$instance->name = $name;
 		
 		$check_st->close();		
 		
@@ -71,14 +97,17 @@ class GE_Chat_Room {
 		
 		$add_st->close();
 		
-		return true;
+		return  $db_link->insert_id;
 	}
 	
-	public function add_line($text, $db_link) {
+	public function add_line( $text, $db_link) {
+		
+		
 		$add_line_q = "INSERT INTO chat_line (chat_room_id, line_datetime, text) VALUES(?,?,?)";
 		($add_st = $db_link->prepare($add_line_q)) or die("Prepare INSERT failed: " . $db_link->error);
 		$mysql_now = date("Y-m-d H:i:s", time());
-		$add_st->bind_param("iss", $this->id, $mysql_now, $text);
+		
+		$add_st->bind_param("iss",$this->id, $mysql_now, $text);
 		$add_st->execute() or die("Execute INSERT failed: " . $db_link->error);
 		
 		$add_st->close();
@@ -105,13 +134,14 @@ class GE_Chat_Room {
 	} */
 	
 	public function get_from_to($start_ts, $end_ts, $db_link) {
+		
 		$get_lines_q = "SELECT line_datetime,text FROM chat_line WHERE chat_room_id=? AND line_datetime > ? AND line_datetime <= ?";
 		($get_lines_st = $db_link->prepare($get_lines_q)) or die("Prepare SELECT failed: " . $db_link->error);
 		
 		$mysql_start_ts = date("Y-m-d H:i:s", $start_ts);
 		$mysql_end_ts = date("Y-m-d H:i:s", $end_ts);
 		
-		$get_lines_st->bind_param("iss", $this->id, $mysql_start_ts, $mysql_end_ts);
+		$get_lines_st->bind_param("iss", $this->id , $mysql_start_ts, $mysql_end_ts);
 		
 		$get_lines_st->execute() or die("Execute SELECT failed: " . $db_link->error);
 		

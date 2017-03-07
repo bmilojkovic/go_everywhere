@@ -26,7 +26,11 @@
 			logMeIn(1, "Name", "email@site.com");
 		</script>
 		
-        <nav class="navbar navbar-inverse" id="ge_nav"></nav>
+        <nav class="navbar navbar-inverse" id="ge_nav">
+		<?php
+			include '../profile/navbar.php';
+		?>
+		</nav>
         <!--CHATTTT-->
         <div class="container-fluid text-center">
             <div class="row content">

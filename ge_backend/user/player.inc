@@ -8,7 +8,7 @@ class GE_Player implements JsonSerializable {
 	private $domain;
 	private $user;
 	
-	public function __construct() {
+	private function __construct() {
 		
 	}
 	

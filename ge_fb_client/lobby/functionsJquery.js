@@ -46,10 +46,6 @@ $(document).ready(function () {
 	
  });
  
-$(function () {
-	$("#ge_nav").load("../profile/navbar.html");
-});
-
 function showRankRestrict() {
 	if($("#restrict").prop("checked"))
 	{

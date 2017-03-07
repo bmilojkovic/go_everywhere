@@ -1,4 +1,5 @@
 <?php
+//i added chat name to be send in functions made in chat_room.inc
 session_start();
 
 include '../db.inc';
@@ -7,9 +8,10 @@ include 'chat_room.inc';
 if (!isset($_SESSION['last_chat_get'])) {
 	$_SESSION['last_chat_get'] = time();
 }
-$chat_name = $_REQUEST['chat_name'];
-$chat_room = GE_Chat_Room::get_by_name($chat_name, $db_link);
 
+$room_id = $_REQUEST['room_id'];
+//$chat_room = GE_Chat_Room::get_by_name($chat_name, $db_link);
+$chat_room= GE_Chat_Room::get_by_room_id($room_id,$db_link);
 $chat_action = $_REQUEST['action'];
 
 switch ($chat_action) {

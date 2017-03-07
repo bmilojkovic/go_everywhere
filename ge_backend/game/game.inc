@@ -1,5 +1,6 @@
 <?php
 
+
 class GE_new_game
 {
 	private $id;
@@ -59,6 +60,7 @@ class GE_new_game
 	
 	public static function create_new_game($chat_room_id,$room_id,$player_black_id,$name,$type,$status,$time_rules, $board_width, $board_height, $handicap, $komi,$db_link)
 	{
+		
 		$check_q='INSERT INTO game (chat_room_id,room_id,player_black_id,name,type,status,time_rules, board_width, board_height, handicap, komi) values (?,?,?,?,?,?,?,?,?,?,?)';
 		
 		($check_st = $db_link->prepare($check_q)) or die("Prepare INSERT failed: " . $db_link->error);
@@ -69,14 +71,23 @@ class GE_new_game
 		return true;
 	}
 	
-	public static function show_new_game($fb_id, $db_link,$max_id)
+	public static function show_new_game($room_id, $fb_id, $db_link, $max_id)
 	{
 		
 		$num_rows_zero=false;
-		$check_q='SELECT g.id,g.player_black_id,g.name,g.type,g.board_width, g.board_height,g.time_rules,g.handicap, p.go_rank, p.name FROM game g, player p WHERE g.status="n" and g.player_black_id=p.id and g.id > ? order by g.id asc ';	
+		$check_q='SELECT g.id,g.player_black_id,g.name,g.type,g.board_width, g.board_height,g.time_rules,g.handicap, p.go_rank, p.name FROM game g, player p WHERE g.status="n" and g.player_black_id=p.id and g.id > ? ';
+		$orderByClause = "order by g.id asc";
+		if($room_id != 1)
+			$check_q .= " and g.room_id = ? ";
+		$check_q .= $orderByClause;
+		
+		
+		
 		($check_st = $db_link->prepare($check_q)) or die("Prepare SELECT failed: " . $db_link->error);
-
-		$check_st->bind_param("i", $max_id);
+		if($room_id != 1)
+			$check_st->bind_param("ii", $max_id, $room_id);
+		else
+			$check_st->bind_param("i", $max_id);
 		
 		$check_st->execute() or die("Execute SELECT failed: " . $db_link->error);
 
