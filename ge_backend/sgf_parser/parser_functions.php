@@ -12,29 +12,32 @@ function obradiUlaz0($text){
 		switch($property[0])
 		{
 			case "SZ":
-				//bla
+				$game["size"]=$property[1];
 				
 				break;
 			case "KM":
-				//bla
+				$game["komi"]=$property[1];
 				
 				break;
 			case "R":
-				//bla
+				$game["result"]=$property[1];
 			
 				break;
 		}
 		
 	}
-	
+	echo json_encode($game);
 	return 1;
 }
 
 function obradiUlaz1($text){
+	$moves=array();
 	$text[1] = substr($text[1], 1);
 	$text[1]=substr($text[1],0,strlen($text[1])-1);
 	
+	
 	$elements=explode("];",$text[1]);
+	
 	
 	//var_dump($elements);
 	for($i=0; $i<count($elements);$i++)
@@ -46,7 +49,7 @@ function obradiUlaz1($text){
 		
 			//var_dump($keyValue);
 			$comment = explode("[", $property[1]);
-			transform($keyValue,$comment);
+			transform($keyValue,$comment,$moves,$i);
 			//var_dump($keyValue);
 			
 		}
@@ -55,28 +58,30 @@ function obradiUlaz1($text){
 			
 		$keyValue = explode("[", $property[0]);
 		//var_dump($keyValue);
-		transform($keyValue,null);
+		transform($keyValue,null,$moves,$i);
 			
 		}
-
-	
-		
+			
 	}
+	
+	echo json_encode($moves);
+	
+	
 	return 2;
 }
 
-function transform($element,$comment){
+function transform($element,$comment,&$moves,$i){
 	
 
-		$moves[0]["color"]=$element[0];
-		$moves[0]["move"]=$element[1];
+		$moves[$i]["color"]=$element[0];
+		$moves[$i]["move"]=$element[1];
 		if($comment!=null)
 		{
-			$moves[0]["comment"]=$comment[1];
+			$moves[$i]["comment"]=$comment[1];
 		}
 		
+	var_dump($moves);
 	
-	echo json_encode($moves);
 }
 
 ?>

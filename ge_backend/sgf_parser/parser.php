@@ -8,7 +8,7 @@ $text = preg_replace('/\s+/', '', $text);
 $text = substr($text, 2); 
 $text=substr($text,0,strlen($text)-2);
 $text=explode(")(",$text);
-var_dump($text);
+//var_dump($text);
 
 $state=0;
 while($state != 2)
