@@ -1,0 +1,102 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <script src="jquery-3.2.1.min.js"></script>
+        <script>
+        
+            $(document).ready(function(){
+                //@token stores user access token.
+                var token;
+                
+                /*
+                    @token user access token
+                    
+                    REST request for user settings. If successfull displays JSON represetation of user profile in #panel div.
+                */
+                function about(token) {
+                    $.ajax({
+                        method: "GET",
+                        contentType: "application/x-www-form-urlencoded",
+                        url: "https://online-go.com/api/v1/mesettings/",
+                        data: {
+                            access_token: token
+                        },
+                        
+                        success: function(response){
+                                console.log("success");
+                                console.log(response);
+                                //removes form from document
+                                $("#panel").empty();
+                                $("#panel").text(JSON.stringify(response.profile));
+                            },
+                        error: function(response){
+                                console.log("error");
+                                console.log(response);
+                            }
+                    })
+                }
+                
+                // "Refresh" profile info
+                
+                $("#profile").on("click", function(e){
+                   about(token); 
+                });
+                
+                /*
+                    On form submit makes REST call for access token. With access token you can make api calls for user. 
+                    data:
+                    @client_id you get one when you register client at https://online-go.com/oauth2/applications/
+                    @client_secret same as client_id
+                    @grant_type more on oauth2 grant types at https://www.digitalocean.com/community/tutorials/an-introduction-to-oauth-2#grant-type-resource-owner-password-credentials
+                    @username value from form
+                    @password value from form
+                */
+                
+                $("#login").on("submit", function(e){
+                    var username, password;
+                    e.preventDefault();
+                    username = $("#username").val();
+                    password = $("#password").val();
+                    console.log("username: ", username, " password: ", password);
+                    
+                    $.ajax({
+                        method: "POST",
+                        url: "https://online-go.com/oauth2/token/",
+                        contentType: "application/x-www-form-urlencoded",
+                        data: {
+                            client_id: "eEMzUcZLmQmfjfoNO4bEJZOqC2K85eivXiL1u9kl",
+                            client_secret: "yv6PY85TyGbCQJ6a8mL0eQwCZhPDrMgbpCVlbAIFSFGTK0FgEASiaRkKaxYKBToOlYO3TZi7w5Kc6EbTH8kvONsqgc7SuZdfOSoqfBnLCfVEppiSyyYXsCkVKCxfvXXj",
+                            grant_type: "password",
+                            username: username,
+                            password: password
+                        },
+                        success: function(response){
+                                console.log("success");
+                                console.log(response.access_token);
+                                token = response.access_token;
+                                $("#profile").show();
+                                about(response.access_token);
+                            },
+                        error: function(response){
+                                console.log(response);
+                            }
+                    });
+                });
+            });
+            
+        </script>
+    </head>
+    
+    <body>
+        <div id="panel">
+            <form action="" name="login" id="login">
+
+                <input id="username" type="text" value=""/><br/>
+                <input id="password" type="password" value=""/><br/>
+                <input type="submit" value="Log in"/><br/>
+
+            </form>
+        </div>
+        <button id="profile" style="display: none;">Refresh Info</button>
+    </body>
+</html>
