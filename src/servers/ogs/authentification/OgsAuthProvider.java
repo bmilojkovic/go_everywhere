@@ -2,22 +2,46 @@ package servers.ogs.authentification;
 
 import java.util.concurrent.CompletableFuture;
 
+import com.mashape.unirest.http.HttpResponse;
+import com.mashape.unirest.http.JsonNode;
+import com.mashape.unirest.http.Unirest;
+import com.mashape.unirest.http.exceptions.UnirestException;
+
 import servers.abstraction.authentification.IAuthProvider;
+import servers.abstraction.authentification.Token;
+import servers.ogs.OgsConstants;
 import servers.ogs.user.OgsUserAccount;
 
 public class OgsAuthProvider implements IAuthProvider<OgsUserAccount> { 
 	 
 	  @Override 
-	  public CompletableFuture<String> asyncAuthorize(String username, String password) { 
-	    return CompletableFuture.supplyAsync(() -> { 
-	      return ""; 
+	  public CompletableFuture<Token> asyncAuthorize(String username, String password) {
+	    return CompletableFuture.supplyAsync(() -> {
+	    	try {
+				HttpResponse<JsonNode> response = Unirest.post("http://httpbin.org/post")
+				  .header("accept", "application/json")
+				  .field("client_id", OgsConstants.CLIENT_ID)
+				  .field("client_secret", OgsConstants.CLIENT_SECRET)
+				  .field("client_secret", "password")
+				  .field("username", username)
+				  .field("password", password).asJson();
+				
+				if (response.getStatus() == 200) {
+					String accessToken = response.getBody().getObject().getString("access_token");
+					String refreshToken = response.getBody().getObject().getString("refresh_token");
+					return new Token(accessToken, refreshToken);
+				}
+			} catch (UnirestException e) {
+				return null;
+			}
+	    	return null;
 	    }); 
 	  } 
 	 
 	  @Override 
-	  public CompletableFuture<String> asyncRefreshToken(OgsUserAccount account) { 
+	  public CompletableFuture<Token> asyncRefreshToken(OgsUserAccount account) { 
 	    return CompletableFuture.supplyAsync(() -> { 
-	      return ""; 
+	    	return null;
 	    }); 
 	  } 
 	 
