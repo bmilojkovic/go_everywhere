@@ -18,11 +18,11 @@ public class OgsAuthProvider implements IAuthProvider<OgsUserAccount> {
 	  public CompletableFuture<Token> asyncAuthorize(String username, String password) {
 	    return CompletableFuture.supplyAsync(() -> {
 	    	try {
-				HttpResponse<JsonNode> response = Unirest.post("http://httpbin.org/post")
+				HttpResponse<JsonNode> response = Unirest.post("https://online-go.com/oauth2/token/")
 				  .header("accept", "application/json")
 				  .field("client_id", OgsConstants.CLIENT_ID)
 				  .field("client_secret", OgsConstants.CLIENT_SECRET)
-				  .field("client_secret", "password")
+				  .field("grant_type", "password")
 				  .field("username", username)
 				  .field("password", password).asJson();
 				
