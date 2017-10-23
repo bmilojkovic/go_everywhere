@@ -1,5 +1,6 @@
 package controllers;
 
+import java.net.URISyntaxException;
 import java.util.concurrent.ExecutionException;
 
 import javax.inject.Inject;
@@ -11,7 +12,6 @@ import javax.ws.rs.Produces;
 import javax.ws.rs.core.Context;
 import javax.ws.rs.core.MediaType;
 
-import servers.ogs.authentification.OgsAuthProvider;
 
 
 @Path("/test")
@@ -25,14 +25,8 @@ public class TestController {
 	@GET
 	@Path("/hello")
 	@Produces(MediaType.TEXT_PLAIN)
-	public String test() {
-		OgsAuthProvider ogsAuthProvider = new OgsAuthProvider();
-		try {
-			return ogsAuthProvider.asyncAuthorize("go_e_1", "qweqwe").get().getAccessToken();
-		} catch (InterruptedException | ExecutionException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
-		return "greska";
+	public String test() throws URISyntaxException {
+		
+		return "Hello";
 	}
 }
