@@ -10,9 +10,9 @@ public interface IUserRepository extends IRepository<User, String> {
 	 */
 	Collection<User> search(String s);
 	
-	Collection<UserAccounts> getUserAccounts(String id);
+	Collection<AbstractUserAccount> getUserAccounts(String id);
 	
 	void addUserAccount(String userId , AbstractUserAccount userAccount);
 	
-	void deleteUserAccoutn(String userId, String accountId);
+	void deleteUserAccount(String userId, String accountId);
 }

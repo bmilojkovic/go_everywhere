@@ -12,6 +12,19 @@ public class AbstractUserAccount {
 	private String refreshToken;
 	
 	private String serverKey;
+	
+	
+
+	public AbstractUserAccount(String id, String username, Date registrationDate, String accessToken,
+			String refreshToken, String serverKey) {
+		super();
+		this.id = id;
+		this.username = username;
+		this.registrationDate = registrationDate;
+		this.accessToken = accessToken;
+		this.refreshToken = refreshToken;
+		this.serverKey = serverKey;
+	}
 
 	public String getServerKey() {
 		return serverKey;
