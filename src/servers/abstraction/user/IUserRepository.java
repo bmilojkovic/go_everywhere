@@ -1,5 +1,6 @@
 package servers.abstraction.user;
 
+import java.sql.SQLException;
 import java.util.Collection;
 
 import servers.abstraction.utils.IRepository;
@@ -10,9 +11,9 @@ public interface IUserRepository extends IRepository<User, String> {
 	 */
 	Collection<User> search(String s);
 	
-	Collection<AbstractUserAccount> getUserAccounts(String id);
+	Collection<AbstractUserAccount> getUserAccounts(String id) throws SQLException;
 	
-	void addUserAccount(String userId , AbstractUserAccount userAccount);
+	void addUserAccount(String userId , AbstractUserAccount userAccount) throws SQLException;
 	
-	void deleteUserAccount(String userId, String accountId);
+	void deleteUserAccount(String userId, String accountId, String serverId) throws SQLException;
 }
