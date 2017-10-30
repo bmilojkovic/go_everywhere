@@ -2,7 +2,7 @@ package servers.abstraction.user;
 
 import java.sql.Date;
 
-public class AbstractUserAccount {
+public abstract class AbstractUserAccount {
 
 	private String id;
 	private String username;
@@ -12,6 +12,19 @@ public class AbstractUserAccount {
 	private String refreshToken;
 	
 	private String serverKey;
+	
+	public AbstractUserAccount() {
+	}
+
+	public AbstractUserAccount(String id, String username, Date registrationDate, String accessToken,
+			String refreshToken, String serverKey) {
+		this.id = id;
+		this.username = username;
+		this.registrationDate = registrationDate;
+		this.accessToken = accessToken;
+		this.refreshToken = refreshToken;
+		this.serverKey = serverKey;
+	}
 
 	public String getServerKey() {
 		return serverKey;
