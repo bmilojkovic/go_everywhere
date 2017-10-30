@@ -9,7 +9,7 @@ public interface IUserRepository extends IRepository<User, String> {
 	/*
 	 * Search by username
 	 */
-	Collection<User> search(String s);
+	Collection<User> search(String s) throws SQLException;
 	
 	Collection<AbstractUserAccount> getUserAccounts(String id) throws SQLException;
 	
