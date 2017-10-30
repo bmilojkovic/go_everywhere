@@ -3,6 +3,8 @@
 
 ### Eclipse ###
 
+.vs_code/
+
 .metadata
 bin/
 tmp/
@@ -91,3 +93,9 @@ target/
 # End of https://www.gitignore.io/api/java,eclipse,java-web
 
 build/
+
+node_modules/
+
+
+
+rt_api/\.vscode/

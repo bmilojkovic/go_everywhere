@@ -12,6 +12,7 @@ import javax.ws.rs.core.Context;
 import javax.ws.rs.core.MediaType;
 
 import servers.ogs.authentification.OgsAuthProvider;
+import utils.JWTTokenNeeded;
 
 
 @Path("/test")
