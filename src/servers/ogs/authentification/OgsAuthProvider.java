@@ -40,9 +40,25 @@ public class OgsAuthProvider implements IAuthProvider<OgsUserAccount> {
 	 
 	  @Override 
 	  public CompletableFuture<Token> asyncRefreshToken(OgsUserAccount account) { 
-	    return CompletableFuture.supplyAsync(() -> { 
-	    	return null;
-	    }); 
+		  return CompletableFuture.supplyAsync(() -> {
+		    	try {
+					HttpResponse<JsonNode> response = Unirest.post("https://online-go.com/oauth2/token/")
+					  .header("accept", "application/json")
+					  .field("client_id", OgsConstants.CLIENT_ID)
+					  .field("client_secret", OgsConstants.CLIENT_SECRET)
+					  .field("grant_type", "refresh_token")
+					  .field("refresh_token", account.getRefreshToken()).asJson();
+					
+					if (response.getStatus() == 200) {
+						String accessToken = response.getBody().getObject().getString("access_token");
+						String refreshToken = response.getBody().getObject().getString("refresh_token");
+						return new Token(accessToken, refreshToken);
+					}
+				} catch (UnirestException e) {
+					return null;
+				}
+		    	return null;
+		    }); 
 	  } 
 	 
 	} 
