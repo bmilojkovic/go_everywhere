@@ -2,6 +2,9 @@ package servers.abstraction.user;
 
 import java.sql.Date;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
+
 public class User extends AbstractUserAccount {
 	
 	private String pictureUrl;
@@ -34,7 +37,10 @@ public class User extends AbstractUserAccount {
 		return lastName;
 	}
 	
-	
+	public String toJson() throws JsonProcessingException {
+		ObjectMapper mapper = new ObjectMapper();
+		return mapper.writeValueAsString(this);
+	}
 	
 	
 }

@@ -37,13 +37,13 @@ class User {
   }
 
   registerListeners() {
-    //this.ogsSio.on('active_game', this.fooBar.bind(this));
-    //this.ogsSio.on('notification', this.fooBar.bind(this));
-    //this.ogsSio.on('net/pong', this.fooBar.bind(this));
-    //this.ogsSio.on('game', this.fooBar.bind(this));
+    this.ogsSio.on('active_game', this.fooBar.bind(this));
+    this.ogsSio.on('notification', this.fooBar.bind(this));
+    this.ogsSio.on('net/pong', this.fooBar.bind(this));
+    this.ogsSio.on('game', this.fooBar.bind(this));
     this.ogsSio.on('seekgraph/global', this.fooBar.bind(this));
-    //this.ogsSio.on('chat-message', this.fooBar.bind(this));
-    //this.ogsSio.on('private-message', this.fooBar.bind(this));
+    this.ogsSio.on('chat-message', this.fooBar.bind(this));
+    this.ogsSio.on('private-message', this.fooBar.bind(this));
   }
 
   mainLogic() {

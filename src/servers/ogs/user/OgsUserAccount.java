@@ -7,6 +7,10 @@ import servers.abstraction.user.AbstractUserAccount;
 public class OgsUserAccount extends AbstractUserAccount {
 	
 	private String userId;
+	
+	public OgsUserAccount() {
+		
+	}
 
 	public OgsUserAccount(String id, String username, Date registrationDate, String accessToken, String refreshToken,
 			String serverKey, String userId) {

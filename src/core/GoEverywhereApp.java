@@ -6,6 +6,7 @@ import javax.ws.rs.core.Application;
 @ApplicationPath("/api")
 public class GoEverywhereApp extends Application {
 
-	public static final String secretKey = "alsdkfjdsalkfjlaskfdj54643@dfsadf12";
+	public static final String secretKey = "KSALDJFLKSADJFKLASDJNJDSAFksjfsalkfd";
+	
 	
 }
