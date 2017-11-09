@@ -10,4 +10,5 @@ public interface IUserService {
 	
 	Collection<AbstractUserAccount> getAccounts(User user);
 	void addAccount(User user, AbstractUserAccount account);
+	
 }

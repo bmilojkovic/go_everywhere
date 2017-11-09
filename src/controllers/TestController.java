@@ -12,6 +12,8 @@ import javax.ws.rs.core.Context;
 import javax.ws.rs.core.MediaType;
 
 import servers.ogs.authentification.OgsAuthProvider;
+import utils.JWTTokenNeeded;
+import utils.ServerResponse;
 
 
 @Path("/test")
@@ -34,5 +36,13 @@ public class TestController {
 			e.printStackTrace();
 		}
 		return "greska";
+	}
+	
+	@GET
+	@Path("/protected")
+	@Produces(MediaType.APPLICATION_JSON)
+	@JWTTokenNeeded
+	public ServerResponse testProtectedRoute() {
+		return new ServerResponse();
 	}
 }

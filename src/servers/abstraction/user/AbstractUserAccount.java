@@ -2,6 +2,8 @@ package servers.abstraction.user;
 
 import java.sql.Date;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+
 public abstract class AbstractUserAccount {
 
 	private String id;
@@ -46,18 +48,24 @@ public abstract class AbstractUserAccount {
 	public void setUsername(String username) {
 		this.username = username;
 	}
+	
 	public Date getRegistrationDate() {
 		return registrationDate;
 	}
 	public void setRegistrationDate(Date registrationDate) {
 		this.registrationDate = registrationDate;
 	}
+	
+	@JsonIgnore
 	public String getAccessToken() {
 		return accessToken;
 	}
+	
 	public void setAccessToken(String accessToken) {
 		this.accessToken = accessToken;
 	}
+	
+	@JsonIgnore
 	public String getRefreshToken() {
 		return refreshToken;
 	}
