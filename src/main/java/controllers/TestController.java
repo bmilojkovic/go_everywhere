@@ -30,7 +30,8 @@ public class TestController {
 	public String test() {
 		OgsAuthProvider ogsAuthProvider = new OgsAuthProvider();
 		try {
-			return ogsAuthProvider.asyncAuthorize("go_e_1", "qweqwe").get().getAccessToken();
+			//return ogsAuthProvider.asyncAuthorize("go_e_1", "qweqwe").get().getAccessToken();
+			return "Hello!";
 		} catch (InterruptedException | ExecutionException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
