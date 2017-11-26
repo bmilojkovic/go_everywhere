@@ -99,3 +99,5 @@ node_modules/
 
 
 rt_api/\.vscode/
+
+WebContent/WEB-INF/faces-config\.xml
