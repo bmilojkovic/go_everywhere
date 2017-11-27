@@ -24,9 +24,20 @@ public class RoomControlerTest {
 	 * Test user should have account on OGS with id 80085.
 	 */
 	
+	// This is used in case that for modifying account user should be logged in.
+		@BeforeClass
+		public static void login() {
+			HashMap<String,String> userInfo = new HashMap<String,String>();
+			userInfo.put("serverName", "OGS");
+			userInfo.put("username", "MortyC132");
+			userInfo.put("password", "password123");
+			given().auth().oauth2("testToken").contentType(ContentType.JSON).body(userInfo).when().post("http://localhost:8080/go_everywhere_be/api/user/server/OGS/login").then()
+			.statusCode(200);
+		}
+	
 	@Test
 	public void joinedChats(){
-		Response response = given().auth().oauth2("testToken").when().contentType(ContentType.JSON).get(url + "/OGS/acc/80085/looby/0/room/0/joined-chats");
+		Response response = given().auth().oauth2("testToken").when().contentType(ContentType.JSON).get(url + "/OGS/acc/80085/lobby/0/room/0/joined-chats");
 		response.then().statusCode(200);
 		String json = response.asString();
 		try {
@@ -38,7 +49,7 @@ public class RoomControlerTest {
 	
 	@Test
 	public void joinedChatsInvalidLobbyID(){
-		given().auth().oauth2("testToken").contentType(ContentType.JSON).when().get(url + "/OGS/acc/80085/looby/12345/room/0/joined-chats").then()
+		given().auth().oauth2("testToken").contentType(ContentType.JSON).when().get(url + "/OGS/acc/80085/lobby/12345/room/0/joined-chats").then()
 		.body("error",equalTo("No lobby found for passed lobbyID"))
 		.statusCode(400);
 	}
@@ -46,7 +57,7 @@ public class RoomControlerTest {
 	
 	@Test
 	public void joinedRooms(){
-		Response response = given().auth().oauth2("testToken").when().contentType(ContentType.JSON).get(url + "/OGS/acc/80085/looby/0/room/0/chats-to-join");
+		Response response = given().auth().oauth2("testToken").when().contentType(ContentType.JSON).get(url + "/OGS/acc/80085/lobby/0/room/0/chats-to-join");
 		response.then().statusCode(200);
 		String json = response.asString();
 		try {
@@ -58,7 +69,7 @@ public class RoomControlerTest {
 	
 	@Test
 	public void joinedRoomsInvalidLobbyID(){
-		given().auth().oauth2("testToken").contentType(ContentType.JSON).when().get(url + "/OGS/acc/80085/looby/0/room/12345/chats-to-join").then()
+		given().auth().oauth2("testToken").contentType(ContentType.JSON).when().get(url + "/OGS/acc/80085/lobby/0/room/12345/chats-to-join").then()
 		.body("error",equalTo("No room  found for passed roomID in Lobby {lobbyID}."))
 		.statusCode(400);
 	}

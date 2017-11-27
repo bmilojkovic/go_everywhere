@@ -17,7 +17,7 @@ import main.java.models.Game;
 import main.java.models.GameChat;
 import main.java.models.Lobby;
 
-@Path("server/{serverID}/acc/{accID}/lobby/{lobbyID}/rooms/{roomID}")
+@Path("server/{serverID}/acc/{accID}/lobby/{lobbyID}/room/{roomID}")
 public class GameController {
 	
 	@PathParam("serverID")
@@ -127,7 +127,7 @@ public class GameController {
 	}
 	
 	@GET
-	@Path("/game/{gameID}/game-estimated-score")
+	@Path("/game/{gameID}/get-estimated-score")
 	@Produces(MediaType.APPLICATION_JSON)
 	@Consumes(MediaType.APPLICATION_JSON)
 	public Board getEstimatedScore(){

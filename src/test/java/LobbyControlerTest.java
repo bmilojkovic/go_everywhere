@@ -26,6 +26,17 @@ public class LobbyControlerTest {
 	 * This should be done for all tests.
 	 */
 	
+	// This is used in case that for modifying account user should be logged in.
+		@BeforeClass
+		public static void login() {
+			HashMap<String,String> userInfo = new HashMap<String,String>();
+			userInfo.put("serverName", "OGS");
+			userInfo.put("username", "MortyC132");
+			userInfo.put("password", "password123");
+			given().auth().oauth2("testToken").contentType(ContentType.JSON).body(userInfo).when().post("http://localhost:8080/go_everywhere_be/api/user/server/OGS/login").then()
+			.statusCode(200);
+		}
+	
 	@Test
 	public void allLobbies(){
 		Response response = given().auth().oauth2("testToken").when().contentType(ContentType.JSON).get(url + "/OGS/acc/80085/lobby/all");
