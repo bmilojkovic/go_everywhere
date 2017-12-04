@@ -18,20 +18,24 @@ import main.java.servers.ogs.user.UserAccountFactory;
 
 public class UserRepository implements IUserRepository{
 
-	private String user = "root";
-	private String pass = "";
+	private String user;
+	private String pass;
+	private String path;
 	Connection connection = null;
 	private Statement statement = null;
     private PreparedStatement preparedStatement = null;
     private ResultSet resultSet = null;
     
 	public UserRepository() {
+		
+		user = DBParameters.getInstance().getUsername();
+		pass = DBParameters.getInstance().getPassword();
+		path = DBParameters.getInstance().getPath();
 				
 		try {
 						
 		    connection =
-		       DriverManager.getConnection("jdbc:mysql://localhost/godb?" +
-		                                   "user=" + user + "&password=" + pass);
+		       DriverManager.getConnection(path + "user=" + user + "&password=" + pass);
 
 		    
 		} catch (SQLException ex) {
