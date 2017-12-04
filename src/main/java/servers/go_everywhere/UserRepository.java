@@ -28,9 +28,9 @@ public class UserRepository implements IUserRepository{
     
 	public UserRepository() {
 		
-		user = DBParameters.getInstance().getUsername();
-		pass = DBParameters.getInstance().getPassword();
-		path = DBParameters.getInstance().getPath();
+		user = DBParameters.USERNAME;
+		pass = DBParameters.PASSWORD;
+		path = DBParameters.PATH;
 				
 		try {
 						
