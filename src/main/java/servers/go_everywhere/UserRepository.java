@@ -21,6 +21,7 @@ public class UserRepository implements IUserRepository{
 	private String user;
 	private String pass;
 	private String path;
+	private String dbname;
 	Connection connection = null;
 	private Statement statement = null;
     private PreparedStatement preparedStatement = null;
@@ -31,11 +32,12 @@ public class UserRepository implements IUserRepository{
 		user = DBParameters.USERNAME;
 		pass = DBParameters.PASSWORD;
 		path = DBParameters.PATH;
+		dbname = DBParameters.DBNAME;
 				
 		try {
 						
 		    connection =
-		       DriverManager.getConnection(path + "user=" + user + "&password=" + pass);
+		       DriverManager.getConnection(path + dbname + "?" + "user=" + user + "&password=" + pass);
 
 		    
 		} catch (SQLException ex) {
@@ -88,7 +90,7 @@ public class UserRepository implements IUserRepository{
 	public void create(User model) throws SQLException  {
 		// TODO Auto-generated method stub
 		
-		String query = "insert into godb.user values(?, ?, ?, ?, ?, ?, ?, ?)";
+		String query = "insert into " + dbname + ".User values(?, ?, ?, ?, ?, ?, ?, ?)";
 		
 		preparedStatement = connection.prepareStatement(query);
 		
@@ -107,22 +109,22 @@ public class UserRepository implements IUserRepository{
 	@Override
 	public User read(String primaryKey) throws SQLException {
 		
-		String query = "select * from godb.user where (id = ?)";
+		String query = "select * from " + dbname + ".User where (id = ?)";
 		
 		preparedStatement = connection.prepareStatement(query);
 		preparedStatement.setString(1, primaryKey);
 		resultSet = preparedStatement.executeQuery();
 		
 		if (resultSet.next()) {		
-			String id = resultSet.getString("ID");
-			String username = resultSet.getString("USERNAME");
-			Date registrationDate = resultSet.getDate("REGISTRATIONDATE");
-			String accessToken = resultSet.getString("ACCESSTOKEN");
-			String refreshToken = resultSet.getString("REFRESHTOKEN");
+			String id = resultSet.getString("id");
+			String username = resultSet.getString("username");
+			Date registrationDate = resultSet.getDate("registrationDate");
+			String accessToken = resultSet.getString("accessToken");
+			String refreshToken = resultSet.getString("refreshToken");
 			String serverKey = "";
-			String pictureUrl = resultSet.getString("PICTUREURL");
-			String firstName = resultSet.getString("FIRSTNAME");
-			String lastName = resultSet.getString("LASTNAME");
+			String pictureUrl = resultSet.getString("pictureURL");
+			String firstName = resultSet.getString("firstName");
+			String lastName = resultSet.getString("lastName");
 			User user = new User(id, username, registrationDate, accessToken,refreshToken, serverKey, pictureUrl, firstName, lastName);
 			return user;
 		}
@@ -134,7 +136,7 @@ public class UserRepository implements IUserRepository{
 	@Override
 	public void update(User model) throws SQLException{
 		
-		String query = "update godb.user set username = ?, firstname = ?, lastname = ?, pictureurl = ?, refreshtoken = ?, accesstoken = ?, registrationdate = ?  where (id = ?)";
+		String query = "update " + dbname + ".User set username = ?, firstName = ?, lastName = ?, pictureURL = ?, refreshToken = ?, accessToken = ?, registrationDate = ?  where (id = ?)";
 		preparedStatement = connection.prepareStatement(query);
 		
 		preparedStatement.setString(1, model.getUsername());
@@ -153,13 +155,13 @@ public class UserRepository implements IUserRepository{
 	@Override
 	public void delete(User model) throws SQLException {
 		
-		String query = "delete from godb.account where(user_id = ?)";
+		String query = "delete from " + dbname + ".Account where(User_id = ?)";
 		preparedStatement = connection.prepareStatement(query);
 		preparedStatement.setString(1, model.getId());
 		
 		preparedStatement.executeUpdate();
 		
-		query = "delete from godb.user where(id = ?)";
+		query = "delete from " + dbname + ".User where(id = ?)";
 		preparedStatement = connection.prepareStatement(query);
 		preparedStatement.setString(1, model.getId());
 		
@@ -171,20 +173,20 @@ public class UserRepository implements IUserRepository{
 	public Collection<User> search(String s) throws SQLException {		
 		
 		ArrayList<User> users = new ArrayList<>();
-		String query = "select * from godb.user where username like \"%" + s + "%\" ";
+		String query = "select * from " + dbname + ".User where username like \"%" + s + "%\" ";
 		
 		preparedStatement = connection.prepareStatement(query);
 		resultSet = preparedStatement.executeQuery();
 		
 		while (resultSet.next()) {
-			String id = resultSet.getString("ID");
-			String username = resultSet.getString("USERNAME");
-			String firstName = resultSet.getString("FIRSTNAME");
-			String lastName = resultSet.getString("LASTNAME");
-			String pictureUrl = resultSet.getString("PICTUREURL");
-			String accessToken = resultSet.getString("ACCESSTOKEN");
-			String refreshToken = resultSet.getString("REFRESHTOKEN");
-			Date registrationDate = resultSet.getDate("REGISTRATIONDATE");
+			String id = resultSet.getString("id");
+			String username = resultSet.getString("username");
+			String firstName = resultSet.getString("firstName");
+			String lastName = resultSet.getString("lastName");
+			String pictureUrl = resultSet.getString("pictureUrl");
+			String accessToken = resultSet.getString("accessToken");
+			String refreshToken = resultSet.getString("refreshToken");
+			Date registrationDate = resultSet.getDate("registrationDate");
 			users.add(new User(id, username, registrationDate, firstName, lastName, pictureUrl, refreshToken, accessToken, " "));
 		}		
 		
@@ -198,20 +200,20 @@ public class UserRepository implements IUserRepository{
 		
 		UserAccountFactory uaf = new UserAccountFactory();
 		ArrayList<AbstractUserAccount> accounts = new ArrayList<>();
-		String query = "select * from godb.account where (user_id = ?)";
+		String query = "select * from " + dbname + ".Account where (User_id = ?)";
 		
 		preparedStatement = connection.prepareStatement(query);
 		preparedStatement.setString(1, id);
 		resultSet = preparedStatement.executeQuery();
 				
 		while (resultSet.next()) {
-			String server = resultSet.getString("SERVER");
-			String accId = resultSet.getString("ID");
-			String username = resultSet.getString("USERNAME");
-			String accessToken = resultSet.getString("ACCESSTOKEN");
-			String refreshToken = resultSet.getString("REFRESHTOKEN");
-			String userId = resultSet.getString("USER_ID");
-			Date registrationDate = resultSet.getDate("REGISTRATIONDATE");
+			String server = resultSet.getString("server");
+			String accId = resultSet.getString("id");
+			String username = resultSet.getString("username");
+			String accessToken = resultSet.getString("accessToken");
+			String refreshToken = resultSet.getString("refreshToken");
+			String userId = resultSet.getString("User_id");
+			Date registrationDate = resultSet.getDate("registrationDate");
 			accounts.add(uaf.getUserAccount(server, accId, username, registrationDate, accessToken, refreshToken, userId));
 		}		
 		
@@ -221,7 +223,7 @@ public class UserRepository implements IUserRepository{
 	@Override
 	public void addUserAccount(String userId, AbstractUserAccount userAccount) throws SQLException {
 		// TODO Auto-generated method stub
-		String query = "insert into godb.account values(?, ?, ?, ?, ?, ?,?)";
+		String query = "insert into " + dbname + ".Account values(?, ?, ?, ?, ?, ?,?)";
 		
 		preparedStatement = connection.prepareStatement(query);
 		
@@ -241,7 +243,7 @@ public class UserRepository implements IUserRepository{
 	public void deleteUserAccount(String userId, String accountId, String serverId) throws SQLException {
 		// TODO Auto-generated method stub
 		
-		String query = "delete from godb.account where(id = ? and User_id = ? and server = ?)";
+		String query = "delete from " + dbname + ".Account where(id = ? and User_id = ? and server = ?)";
 		
 		preparedStatement = connection.prepareStatement(query);
 		

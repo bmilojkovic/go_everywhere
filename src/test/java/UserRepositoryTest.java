@@ -16,6 +16,7 @@ import org.junit.Test;
 
 import main.java.servers.abstraction.user.AbstractUserAccount;
 import main.java.servers.abstraction.user.User;
+import main.java.servers.go_everywhere.DBParameters;
 import main.java.servers.go_everywhere.UserRepository;
 import main.java.servers.ogs.user.OgsUserAccount;
 
@@ -24,10 +25,12 @@ import main.java.servers.ogs.user.OgsUserAccount;
 public class UserRepositoryTest {
 
 	private UserRepository r;
+	private String dbname;
 	
 	@Before
 	public void setUp() {
 		r = new UserRepository();
+		dbname = DBParameters.DBNAME;
 	}
 
 	@Test 
@@ -36,12 +39,12 @@ public class UserRepositoryTest {
 		Statement statement;
 		ResultSet resultSet;
 		
-		String query = "select * from godb.user where id = \"userid\"";
+		String query = "select * from " + dbname + ".User where id = \"userid\"";
 		statement = r.getConnection().createStatement();
 		resultSet = statement.executeQuery(query);
 		
 		if (resultSet.next()) {
-			query = "delete from godb.user where id = \"userid\"";
+			query = "delete from " + dbname + ".User where id = \"userid\"";
 			statement = r.getConnection().createStatement();
 			statement.executeUpdate(query);
 		}
@@ -49,19 +52,19 @@ public class UserRepositoryTest {
 		User user = new User("userid", "username", new Date(117, 10, 27), "at", "rt", "ogs", "user.png", "FName", "LName");
 		r.create(user);
 		
-		query = "select * from godb.user where id = \"userid\"";
+		query = "select * from " + dbname + ".User where id = \"userid\"";
 		statement = r.getConnection().createStatement();
 		resultSet = statement.executeQuery(query);
 		
 		resultSet.next();
-		String id = resultSet.getString("ID");
-		String username = resultSet.getString("USERNAME");
-		String firstName = resultSet.getString("FIRSTNAME");
-		String lastName = resultSet.getString("LASTNAME");
-		String pictureUrl = resultSet.getString("PICTUREURL");
-		String accessToken = resultSet.getString("ACCESSTOKEN");
-		String refreshToken = resultSet.getString("REFRESHTOKEN");
-		Date registrationDate = resultSet.getDate("REGISTRATIONDATE");
+		String id = resultSet.getString("id");
+		String username = resultSet.getString("username");
+		String firstName = resultSet.getString("firstName");
+		String lastName = resultSet.getString("lastName");
+		String pictureUrl = resultSet.getString("pictureURL");
+		String accessToken = resultSet.getString("accessToken");
+		String refreshToken = resultSet.getString("refreshToken");
+		Date registrationDate = resultSet.getDate("registrationDate");
 		
 		assertEquals(user.getId(), id);
 		assertEquals(user.getUsername(), username);
@@ -72,7 +75,7 @@ public class UserRepositoryTest {
 		assertEquals(user.getFirstName(), firstName);
 		assertEquals(user.getLastName(), lastName);
 		
-		query = "delete from godb.user where id = \"userid\"";
+		query = "delete from " + dbname + ".User where id = \"userid\"";
 		statement = r.getConnection().createStatement();
 		statement.executeUpdate(query);
 		
@@ -95,12 +98,12 @@ public class UserRepositoryTest {
 		ResultSet resultSet;
 		User user = new User("userid", "username", new Date(117, 10, 27), "at", "rt", "ogs", "user.png", "FName", "LName");
 		
-		String query = "select * from godb.user where id = \"userid\"";
+		String query = "select * from " + dbname + ".User where id = \"userid\"";
 		statement = r.getConnection().createStatement();
 		resultSet = statement.executeQuery(query);
 		
 		if (!resultSet.next()) {
-			query = "insert into godb.user values(\"userid\", \"username\", \"FName\", \"LName\", \"user.png\", \"rt\", \"at\", ?)";
+			query = "insert into " + dbname + ".user values(\"userid\", \"username\", \"FName\", \"LName\", \"user.png\", \"rt\", \"at\", ?)";
 			preparedStatement = (PreparedStatement) r.getConnection().prepareStatement(query);
 			preparedStatement.setDate(1, new Date(117, 10, 27));
 			preparedStatement.executeUpdate();
@@ -116,7 +119,7 @@ public class UserRepositoryTest {
 		assertEquals(user.getFirstName(), newUser.getFirstName());
 		assertEquals(user.getLastName(), newUser.getLastName());
 		
-		query = "delete from godb.user where id = \"userid\"";
+		query = "delete from " + dbname + ".User where id = \"userid\"";
 		statement = r.getConnection().createStatement();
 		statement.executeUpdate(query);
 		
@@ -130,38 +133,38 @@ public class UserRepositoryTest {
 		ResultSet resultSet;
 		User user = new User("userid", "username", new Date(117, 10, 27), "aat", "rrt", "ogs", "useruser.png", "FName", "LName");
 		
-		String query = "select * from godb.user where id = \"userid\"";
+		String query = "select * from " + dbname + ".User where id = \"userid\"";
 		statement = r.getConnection().createStatement();
 		resultSet = statement.executeQuery(query);
 		
 		if (!resultSet.next()) {
-			query = "insert into godb.user values(\"userid\", \"username\", \"FName\", \"LName\", \"user.png\", \"rt\", \"at\", ?)";
+			query = "insert into " + dbname + ".User values(\"userid\", \"username\", \"FName\", \"LName\", \"user.png\", \"rt\", \"at\", ?)";
 			preparedStatement = (PreparedStatement) r.getConnection().prepareStatement(query);
 			preparedStatement.setDate(1, new Date(117, 10, 27));
 			preparedStatement.executeUpdate();
 		}
 		
-		query = "insert into godb.account values(\"accid\", \"rt\", \"at\", \"username\", \"ogs\", \"userid\", ?)";
+		query = "insert into " + dbname + ".Account values(\"accid\", \"rt\", \"at\", \"username\", \"ogs\", \"userid\", ?)";
 		preparedStatement = (PreparedStatement) r.getConnection().prepareStatement(query);
 		preparedStatement.setDate(1, new Date(117, 10, 27));
 		preparedStatement.executeUpdate();
 		
 		r.update(user);
 		
-		query = "select * from godb.user where id = \"userid\"";
+		query = "select * from " + dbname + ".User where id = \"userid\"";
 		statement = r.getConnection().createStatement();
 		resultSet = statement.executeQuery(query);
 		resultSet.next();
 		
-		assertEquals("aat", resultSet.getString("ACCESSTOKEN"));
-		assertEquals("rrt", resultSet.getString("REFRESHTOKEN"));
-		assertEquals("useruser.png", resultSet.getString("PICTUREURL"));
+		assertEquals("aat", resultSet.getString("accessToken"));
+		assertEquals("rrt", resultSet.getString("refreshToken"));
+		assertEquals("useruser.png", resultSet.getString("pictureURL"));
 		
-		query = "delete from godb.account where (id = \"accid\" and user_id = \"userid\" and server = \"ogs\")";
+		query = "delete from " + dbname + ".Account where (id = \"accid\" and User_id = \"userid\" and server = \"ogs\")";
 		statement = r.getConnection().createStatement();
 		statement.executeUpdate(query);
 		
-		query = "delete from godb.user where id = \"userid\"";
+		query = "delete from " + dbname + ".User where id = \"userid\"";
 		statement = r.getConnection().createStatement();
 		statement.executeUpdate(query);		
 		
@@ -175,14 +178,14 @@ public class UserRepositoryTest {
 		Statement statement;
 		ResultSet resultSet;
 		
-		String query = "insert into godb.user values(\"userid\", \"username\", \"FName\", \"LName\", \"user.png\", \"rt\", \"at\", ?)";
+		String query = "insert into " + dbname + ".User values(\"userid\", \"username\", \"FName\", \"LName\", \"user.png\", \"rt\", \"at\", ?)";
 		preparedStatement = (PreparedStatement) r.getConnection().prepareStatement(query);
 		preparedStatement.setDate(1, new Date(117, 10, 27));
 		preparedStatement.executeUpdate();
 		
 		r.delete(user);
 		
-		query = "select * from godb.user where id = \"userid\"";
+		query = "select * from " + dbname + ".User where id = \"userid\"";
 		statement = r.getConnection().createStatement();
 		resultSet = statement.executeQuery(query);
 		
@@ -198,25 +201,25 @@ public class UserRepositoryTest {
 		Statement statement;
 		ResultSet resultSet;
 		
-		String query = "select * from godb.user where (id = \"userid1\" or id = \"userid2\" or id = \"userid3\")";
+		String query = "select * from " + dbname + ".User where (id = \"userid1\" or id = \"userid2\" or id = \"userid3\")";
 		statement = r.getConnection().createStatement();
 		resultSet = statement.executeQuery(query);
 		
 		if (resultSet.next()) {
-			query = "delete from godb.user where (id = \"userid1\" or id = \"userid2\" or id = \"userid3\")";
+			query = "delete from " + dbname + ".User where (id = \"userid1\" or id = \"userid2\" or id = \"userid3\")";
 			statement = r.getConnection().createStatement();
 			statement.executeUpdate(query);
 		}
 		
-		query = "insert into godb.user values(\"userid1\", \"uusername1\", \"FName1\", \"LName1\", \"user1.png\", \"rt1\", \"at1\", ?)";
+		query = "insert into " + dbname + ".User values(\"userid1\", \"uusername1\", \"FName1\", \"LName1\", \"user1.png\", \"rt1\", \"at1\", ?)";
 		preparedStatement = (PreparedStatement) r.getConnection().prepareStatement(query);
 		preparedStatement.setDate(1, new Date(117, 1, 1));
 		preparedStatement.executeUpdate();
-		query = "insert into godb.user values(\"userid2\", \"uusername2\", \"FName2\", \"LName2\", \"user2.png\", \"rt2\", \"at2\", ?)";
+		query = "insert into " + dbname + ".User values(\"userid2\", \"uusername2\", \"FName2\", \"LName2\", \"user2.png\", \"rt2\", \"at2\", ?)";
 		preparedStatement = (PreparedStatement) r.getConnection().prepareStatement(query);
 		preparedStatement.setDate(1, new Date(117, 2, 2));
 		preparedStatement.executeUpdate();
-		query = "insert into godb.user values(\"userid3\", \"username3\", \"FName3\", \"LName3\", \"user3.png\", \"rt3\", \"at3\", ?)";
+		query = "insert into " + dbname + ".User values(\"userid3\", \"username3\", \"FName3\", \"LName3\", \"user3.png\", \"rt3\", \"at3\", ?)";
 		preparedStatement = (PreparedStatement) r.getConnection().prepareStatement(query);
 		preparedStatement.setDate(1, new Date(117, 3, 3));
 		preparedStatement.executeUpdate();
@@ -227,7 +230,7 @@ public class UserRepositoryTest {
 			assertTrue(user.getUsername().indexOf("uus") != -1);
 		}
 		
-		query = "delete from godb.user where (id = \"userid1\" or id = \"userid2\" or id = \"userid3\")";
+		query = "delete from " + dbname + ".User where (id = \"userid1\" or id = \"userid2\" or id = \"userid3\")";
 		statement = r.getConnection().createStatement();
 		statement.executeUpdate(query);
 		
@@ -241,17 +244,17 @@ public class UserRepositoryTest {
 		ArrayList<AbstractUserAccount> accounts = new ArrayList<>();
 		ResultSet resultSet;
 		
-		String query = "select * from godb.user where id = \"userid\"";
+		String query = "select * from " + dbname + ".User where id = \"userid\"";
 		statement = r.getConnection().createStatement();
 		resultSet = statement.executeQuery(query);
 		
 		if (!resultSet.next()) {
-			query = "insert into godb.user values(\"userid\", \"username\", \"FName\", \"LName\", \"user.png\", \"rt\", \"at\", ?)";
+			query = "insert into " + dbname + ".User values(\"userid\", \"username\", \"FName\", \"LName\", \"user.png\", \"rt\", \"at\", ?)";
 			preparedStatement = (PreparedStatement) r.getConnection().prepareStatement(query);
 			preparedStatement.setDate(1, new Date(117, 10, 27));
 			preparedStatement.executeUpdate();
 		}
-		query = "insert into godb.account values(\"accid\", \"rt\", \"at\", \"username\", \"ogs\", \"userid\", ?)";
+		query = "insert into " + dbname + ".Account values(\"accid\", \"rt\", \"at\", \"username\", \"ogs\", \"userid\", ?)";
 		preparedStatement = (PreparedStatement) r.getConnection().prepareStatement(query);
 		preparedStatement.setDate(1, new Date(117, 10, 27));
 		preparedStatement.executeUpdate();
@@ -268,11 +271,11 @@ public class UserRepositoryTest {
 		assertEquals("userid", ogsAcc.getUserId());
 		assertEquals(new Date(117, 10, 27), ogsAcc.getRegistrationDate());
 				
-		query = "delete from godb.account where (id = \"accid\" and user_id = \"userid\" and server = \"ogs\")";
+		query = "delete from " + dbname + ".Account where (id = \"accid\" and User_id = \"userid\" and server = \"ogs\")";
 		statement = r.getConnection().createStatement();
 		statement.executeUpdate(query);
 		
-		query = "delete from godb.user where id = \"userid\"";
+		query = "delete from " + dbname + ".User where id = \"userid\"";
 		statement = r.getConnection().createStatement();
 		statement.executeUpdate(query);		
 		
@@ -283,18 +286,18 @@ public class UserRepositoryTest {
 		Statement statement;
 		ResultSet resultSet;
 		
-		String query = "select * from godb.user where id = \"userid\"";
+		String query = "select * from " + dbname + ".User where id = \"userid\"";
 		statement = r.getConnection().createStatement();
 		PreparedStatement preparedStatement;
 		resultSet = statement.executeQuery(query);
 		
 		if (resultSet.next()) {
-			query = "delete from godb.user where id = \"userid\"";
+			query = "delete from " + dbname + ".User where id = \"userid\"";
 			statement = r.getConnection().createStatement();
 			statement.executeUpdate(query);
 		}
 		
-		query = "insert into godb.user values(\"userid\", \"username\", \"FName\", \"LName\", \"user.png\", \"rt\", \"at\", ?)";
+		query = "insert into " + dbname + ".User values(\"userid\", \"username\", \"FName\", \"LName\", \"user.png\", \"rt\", \"at\", ?)";
 		preparedStatement = (PreparedStatement) r.getConnection().prepareStatement(query);
 		preparedStatement.setDate(1, new Date(117, 10, 27));
 		preparedStatement.executeUpdate();
@@ -303,18 +306,18 @@ public class UserRepositoryTest {
 		
 		r.addUserAccount("userid", userAccount);
 		
-		query = "select * from godb.account where id = \"accid\"";
+		query = "select * from " + dbname + ".Account where id = \"accid\"";
 		statement = r.getConnection().createStatement();
 		resultSet = statement.executeQuery(query);
 		
 		resultSet.next();
-		String id = resultSet.getString("ID");
-		String username = resultSet.getString("USERNAME");
-		Date registrationDate = resultSet.getDate("REGISTRATIONDATE");
-		String accessToken = resultSet.getString("ACCESSTOKEN");
-		String refreshToken = resultSet.getString("REFRESHTOKEN");
-		String serverKey = resultSet.getString("SERVER");
-		String userId = resultSet.getString("USER_ID");
+		String id = resultSet.getString("id");
+		String username = resultSet.getString("username");
+		Date registrationDate = resultSet.getDate("registrationDate");
+		String accessToken = resultSet.getString("accessToken");
+		String refreshToken = resultSet.getString("refreshToken");
+		String serverKey = resultSet.getString("server");
+		String userId = resultSet.getString("User_id");
 		
 		assertEquals(userAccount.getId(), id);
 		assertEquals(userAccount.getUsername(), username);
@@ -324,11 +327,11 @@ public class UserRepositoryTest {
 		assertEquals(userAccount.getServerKey(), serverKey);
 		assertEquals(userAccount.getUserId(), userId);
 		
-		query = "delete from godb.account where (id = \"accid\" and user_id = \"userid\" and server = \"ogs\")";
+		query = "delete from " + dbname + ".Account where (id = \"accid\" and User_id = \"userid\" and server = \"ogs\")";
 		statement = r.getConnection().createStatement();
 		statement.executeUpdate(query);
 		
-		query = "delete from godb.user where id = \"userid\"";
+		query = "delete from " + dbname + ".User where id = \"userid\"";
 		statement = r.getConnection().createStatement();
 		statement.executeUpdate(query);		
 	
@@ -341,31 +344,31 @@ public void testDeleteUserAccount() throws SQLException {
 		Statement statement;
 		ResultSet resultSet;
 		
-		String query = "select * from godb.user where id = \"userid\"";
+		String query = "select * from " + dbname + ".User where id = \"userid\"";
 		statement = r.getConnection().createStatement();
 		resultSet = statement.executeQuery(query);
 		
 		if (!resultSet.next()) {
-			query = "insert into godb.user values(\"userid\", \"username\", \"FName\", \"LName\", \"user.png\", \"rt\", \"at\", ?)";
+			query = "insert into " + dbname + ".User values(\"userid\", \"username\", \"FName\", \"LName\", \"user.png\", \"rt\", \"at\", ?)";
 			preparedStatement = (PreparedStatement) r.getConnection().prepareStatement(query);
 			preparedStatement.setDate(1, new Date(117, 10, 27));
 			preparedStatement.executeUpdate();
 		}
 		
-		query = "insert into godb.account values(\"accid1\", \"rt1\", \"at1\", \"username1\", \"ogs\", \"userid\", ?)";
+		query = "insert into " + dbname + ".Account values(\"accid1\", \"rt1\", \"at1\", \"username1\", \"ogs\", \"userid\", ?)";
 		preparedStatement = (PreparedStatement) r.getConnection().prepareStatement(query);
 		preparedStatement.setDate(1, new Date(117, 10, 27));
 		preparedStatement.executeUpdate();
 		
 		r.deleteUserAccount("userid", "accid1", "ogs");
 		
-		query = "select * from godb.account where (user_id = \"userid\" and id = \"accid1\" and server = \"ogs\")";
+		query = "select * from " + dbname + ".Account where (User_id = \"userid\" and id = \"accid1\" and server = \"ogs\")";
 		statement = r.getConnection().createStatement();
 		resultSet = statement.executeQuery(query);
 		
 		assertFalse(resultSet.next());
 		
-		query = "delete from godb.user where id = \"userid\"";
+		query = "delete from " + dbname + ".User where id = \"userid\"";
 		statement = r.getConnection().createStatement();
 		statement.executeUpdate(query);
 		
