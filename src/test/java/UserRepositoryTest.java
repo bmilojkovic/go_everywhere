@@ -25,12 +25,10 @@ import main.java.servers.ogs.user.OgsUserAccount;
 public class UserRepositoryTest {
 
 	private UserRepository r;
-	private String dbname;
 	
 	@Before
 	public void setUp() {
 		r = new UserRepository();
-		dbname = DBParameters.DBNAME;
 	}
 
 	@Test 
@@ -39,12 +37,12 @@ public class UserRepositoryTest {
 		Statement statement;
 		ResultSet resultSet;
 		
-		String query = "select * from " + dbname + ".User where id = \"userid\"";
+		String query = "select * from User where id = \"userid\"";
 		statement = r.getConnection().createStatement();
 		resultSet = statement.executeQuery(query);
 		
 		if (resultSet.next()) {
-			query = "delete from " + dbname + ".User where id = \"userid\"";
+			query = "delete from User where id = \"userid\"";
 			statement = r.getConnection().createStatement();
 			statement.executeUpdate(query);
 		}
@@ -52,7 +50,7 @@ public class UserRepositoryTest {
 		User user = new User("userid", "username", new Date(117, 10, 27), "at", "rt", "ogs", "user.png", "FName", "LName");
 		r.create(user);
 		
-		query = "select * from " + dbname + ".User where id = \"userid\"";
+		query = "select * from User where id = \"userid\"";
 		statement = r.getConnection().createStatement();
 		resultSet = statement.executeQuery(query);
 		
@@ -75,7 +73,7 @@ public class UserRepositoryTest {
 		assertEquals(user.getFirstName(), firstName);
 		assertEquals(user.getLastName(), lastName);
 		
-		query = "delete from " + dbname + ".User where id = \"userid\"";
+		query = "delete from User where id = \"userid\"";
 		statement = r.getConnection().createStatement();
 		statement.executeUpdate(query);
 		
@@ -98,12 +96,12 @@ public class UserRepositoryTest {
 		ResultSet resultSet;
 		User user = new User("userid", "username", new Date(117, 10, 27), "at", "rt", "ogs", "user.png", "FName", "LName");
 		
-		String query = "select * from " + dbname + ".User where id = \"userid\"";
+		String query = "select * from User where id = \"userid\"";
 		statement = r.getConnection().createStatement();
 		resultSet = statement.executeQuery(query);
 		
 		if (!resultSet.next()) {
-			query = "insert into " + dbname + ".user values(\"userid\", \"username\", \"FName\", \"LName\", \"user.png\", \"rt\", \"at\", ?)";
+			query = "insert into User values(\"userid\", \"username\", \"FName\", \"LName\", \"user.png\", \"rt\", \"at\", ?)";
 			preparedStatement = (PreparedStatement) r.getConnection().prepareStatement(query);
 			preparedStatement.setDate(1, new Date(117, 10, 27));
 			preparedStatement.executeUpdate();
@@ -119,7 +117,7 @@ public class UserRepositoryTest {
 		assertEquals(user.getFirstName(), newUser.getFirstName());
 		assertEquals(user.getLastName(), newUser.getLastName());
 		
-		query = "delete from " + dbname + ".User where id = \"userid\"";
+		query = "delete from User where id = \"userid\"";
 		statement = r.getConnection().createStatement();
 		statement.executeUpdate(query);
 		
@@ -133,25 +131,25 @@ public class UserRepositoryTest {
 		ResultSet resultSet;
 		User user = new User("userid", "username", new Date(117, 10, 27), "aat", "rrt", "ogs", "useruser.png", "FName", "LName");
 		
-		String query = "select * from " + dbname + ".User where id = \"userid\"";
+		String query = "select * from User where id = \"userid\"";
 		statement = r.getConnection().createStatement();
 		resultSet = statement.executeQuery(query);
 		
 		if (!resultSet.next()) {
-			query = "insert into " + dbname + ".User values(\"userid\", \"username\", \"FName\", \"LName\", \"user.png\", \"rt\", \"at\", ?)";
+			query = "insert into User values(\"userid\", \"username\", \"FName\", \"LName\", \"user.png\", \"rt\", \"at\", ?)";
 			preparedStatement = (PreparedStatement) r.getConnection().prepareStatement(query);
 			preparedStatement.setDate(1, new Date(117, 10, 27));
 			preparedStatement.executeUpdate();
 		}
 		
-		query = "insert into " + dbname + ".Account values(\"accid\", \"rt\", \"at\", \"username\", \"ogs\", \"userid\", ?)";
+		query = "insert into Account values(\"accid\", \"rt\", \"at\", \"username\", \"ogs\", \"userid\", ?)";
 		preparedStatement = (PreparedStatement) r.getConnection().prepareStatement(query);
 		preparedStatement.setDate(1, new Date(117, 10, 27));
 		preparedStatement.executeUpdate();
 		
 		r.update(user);
 		
-		query = "select * from " + dbname + ".User where id = \"userid\"";
+		query = "select * from User where id = \"userid\"";
 		statement = r.getConnection().createStatement();
 		resultSet = statement.executeQuery(query);
 		resultSet.next();
@@ -160,11 +158,11 @@ public class UserRepositoryTest {
 		assertEquals("rrt", resultSet.getString("refreshToken"));
 		assertEquals("useruser.png", resultSet.getString("pictureURL"));
 		
-		query = "delete from " + dbname + ".Account where (id = \"accid\" and User_id = \"userid\" and server = \"ogs\")";
+		query = "delete from Account where (id = \"accid\" and User_id = \"userid\" and server = \"ogs\")";
 		statement = r.getConnection().createStatement();
 		statement.executeUpdate(query);
 		
-		query = "delete from " + dbname + ".User where id = \"userid\"";
+		query = "delete from User where id = \"userid\"";
 		statement = r.getConnection().createStatement();
 		statement.executeUpdate(query);		
 		
@@ -178,14 +176,14 @@ public class UserRepositoryTest {
 		Statement statement;
 		ResultSet resultSet;
 		
-		String query = "insert into " + dbname + ".User values(\"userid\", \"username\", \"FName\", \"LName\", \"user.png\", \"rt\", \"at\", ?)";
+		String query = "insert into User values(\"userid\", \"username\", \"FName\", \"LName\", \"user.png\", \"rt\", \"at\", ?)";
 		preparedStatement = (PreparedStatement) r.getConnection().prepareStatement(query);
 		preparedStatement.setDate(1, new Date(117, 10, 27));
 		preparedStatement.executeUpdate();
 		
 		r.delete(user);
 		
-		query = "select * from " + dbname + ".User where id = \"userid\"";
+		query = "select * from User where id = \"userid\"";
 		statement = r.getConnection().createStatement();
 		resultSet = statement.executeQuery(query);
 		
@@ -201,25 +199,25 @@ public class UserRepositoryTest {
 		Statement statement;
 		ResultSet resultSet;
 		
-		String query = "select * from " + dbname + ".User where (id = \"userid1\" or id = \"userid2\" or id = \"userid3\")";
+		String query = "select * from User where (id = \"userid1\" or id = \"userid2\" or id = \"userid3\")";
 		statement = r.getConnection().createStatement();
 		resultSet = statement.executeQuery(query);
 		
 		if (resultSet.next()) {
-			query = "delete from " + dbname + ".User where (id = \"userid1\" or id = \"userid2\" or id = \"userid3\")";
+			query = "delete from User where (id = \"userid1\" or id = \"userid2\" or id = \"userid3\")";
 			statement = r.getConnection().createStatement();
 			statement.executeUpdate(query);
 		}
 		
-		query = "insert into " + dbname + ".User values(\"userid1\", \"uusername1\", \"FName1\", \"LName1\", \"user1.png\", \"rt1\", \"at1\", ?)";
+		query = "insert into User values(\"userid1\", \"uusername1\", \"FName1\", \"LName1\", \"user1.png\", \"rt1\", \"at1\", ?)";
 		preparedStatement = (PreparedStatement) r.getConnection().prepareStatement(query);
 		preparedStatement.setDate(1, new Date(117, 1, 1));
 		preparedStatement.executeUpdate();
-		query = "insert into " + dbname + ".User values(\"userid2\", \"uusername2\", \"FName2\", \"LName2\", \"user2.png\", \"rt2\", \"at2\", ?)";
+		query = "insert into User values(\"userid2\", \"uusername2\", \"FName2\", \"LName2\", \"user2.png\", \"rt2\", \"at2\", ?)";
 		preparedStatement = (PreparedStatement) r.getConnection().prepareStatement(query);
 		preparedStatement.setDate(1, new Date(117, 2, 2));
 		preparedStatement.executeUpdate();
-		query = "insert into " + dbname + ".User values(\"userid3\", \"username3\", \"FName3\", \"LName3\", \"user3.png\", \"rt3\", \"at3\", ?)";
+		query = "insert into User values(\"userid3\", \"username3\", \"FName3\", \"LName3\", \"user3.png\", \"rt3\", \"at3\", ?)";
 		preparedStatement = (PreparedStatement) r.getConnection().prepareStatement(query);
 		preparedStatement.setDate(1, new Date(117, 3, 3));
 		preparedStatement.executeUpdate();
@@ -230,7 +228,7 @@ public class UserRepositoryTest {
 			assertTrue(user.getUsername().indexOf("uus") != -1);
 		}
 		
-		query = "delete from " + dbname + ".User where (id = \"userid1\" or id = \"userid2\" or id = \"userid3\")";
+		query = "delete from User where (id = \"userid1\" or id = \"userid2\" or id = \"userid3\")";
 		statement = r.getConnection().createStatement();
 		statement.executeUpdate(query);
 		
@@ -244,17 +242,17 @@ public class UserRepositoryTest {
 		ArrayList<AbstractUserAccount> accounts = new ArrayList<>();
 		ResultSet resultSet;
 		
-		String query = "select * from " + dbname + ".User where id = \"userid\"";
+		String query = "select * from User where id = \"userid\"";
 		statement = r.getConnection().createStatement();
 		resultSet = statement.executeQuery(query);
 		
 		if (!resultSet.next()) {
-			query = "insert into " + dbname + ".User values(\"userid\", \"username\", \"FName\", \"LName\", \"user.png\", \"rt\", \"at\", ?)";
+			query = "insert into User values(\"userid\", \"username\", \"FName\", \"LName\", \"user.png\", \"rt\", \"at\", ?)";
 			preparedStatement = (PreparedStatement) r.getConnection().prepareStatement(query);
 			preparedStatement.setDate(1, new Date(117, 10, 27));
 			preparedStatement.executeUpdate();
 		}
-		query = "insert into " + dbname + ".Account values(\"accid\", \"rt\", \"at\", \"username\", \"ogs\", \"userid\", ?)";
+		query = "insert into Account values(\"accid\", \"rt\", \"at\", \"username\", \"ogs\", \"userid\", ?)";
 		preparedStatement = (PreparedStatement) r.getConnection().prepareStatement(query);
 		preparedStatement.setDate(1, new Date(117, 10, 27));
 		preparedStatement.executeUpdate();
@@ -271,11 +269,11 @@ public class UserRepositoryTest {
 		assertEquals("userid", ogsAcc.getUserId());
 		assertEquals(new Date(117, 10, 27), ogsAcc.getRegistrationDate());
 				
-		query = "delete from " + dbname + ".Account where (id = \"accid\" and User_id = \"userid\" and server = \"ogs\")";
+		query = "delete from Account where (id = \"accid\" and User_id = \"userid\" and server = \"ogs\")";
 		statement = r.getConnection().createStatement();
 		statement.executeUpdate(query);
 		
-		query = "delete from " + dbname + ".User where id = \"userid\"";
+		query = "delete from User where id = \"userid\"";
 		statement = r.getConnection().createStatement();
 		statement.executeUpdate(query);		
 		
@@ -286,18 +284,18 @@ public class UserRepositoryTest {
 		Statement statement;
 		ResultSet resultSet;
 		
-		String query = "select * from " + dbname + ".User where id = \"userid\"";
+		String query = "select * from User where id = \"userid\"";
 		statement = r.getConnection().createStatement();
 		PreparedStatement preparedStatement;
 		resultSet = statement.executeQuery(query);
 		
 		if (resultSet.next()) {
-			query = "delete from " + dbname + ".User where id = \"userid\"";
+			query = "delete from User where id = \"userid\"";
 			statement = r.getConnection().createStatement();
 			statement.executeUpdate(query);
 		}
 		
-		query = "insert into " + dbname + ".User values(\"userid\", \"username\", \"FName\", \"LName\", \"user.png\", \"rt\", \"at\", ?)";
+		query = "insert into User values(\"userid\", \"username\", \"FName\", \"LName\", \"user.png\", \"rt\", \"at\", ?)";
 		preparedStatement = (PreparedStatement) r.getConnection().prepareStatement(query);
 		preparedStatement.setDate(1, new Date(117, 10, 27));
 		preparedStatement.executeUpdate();
@@ -306,7 +304,7 @@ public class UserRepositoryTest {
 		
 		r.addUserAccount("userid", userAccount);
 		
-		query = "select * from " + dbname + ".Account where id = \"accid\"";
+		query = "select * from Account where id = \"accid\"";
 		statement = r.getConnection().createStatement();
 		resultSet = statement.executeQuery(query);
 		
@@ -327,11 +325,11 @@ public class UserRepositoryTest {
 		assertEquals(userAccount.getServerKey(), serverKey);
 		assertEquals(userAccount.getUserId(), userId);
 		
-		query = "delete from " + dbname + ".Account where (id = \"accid\" and User_id = \"userid\" and server = \"ogs\")";
+		query = "delete from Account where (id = \"accid\" and User_id = \"userid\" and server = \"ogs\")";
 		statement = r.getConnection().createStatement();
 		statement.executeUpdate(query);
 		
-		query = "delete from " + dbname + ".User where id = \"userid\"";
+		query = "delete from User where id = \"userid\"";
 		statement = r.getConnection().createStatement();
 		statement.executeUpdate(query);		
 	
@@ -344,31 +342,31 @@ public void testDeleteUserAccount() throws SQLException {
 		Statement statement;
 		ResultSet resultSet;
 		
-		String query = "select * from " + dbname + ".User where id = \"userid\"";
+		String query = "select * from User where id = \"userid\"";
 		statement = r.getConnection().createStatement();
 		resultSet = statement.executeQuery(query);
 		
 		if (!resultSet.next()) {
-			query = "insert into " + dbname + ".User values(\"userid\", \"username\", \"FName\", \"LName\", \"user.png\", \"rt\", \"at\", ?)";
+			query = "insert into User values(\"userid\", \"username\", \"FName\", \"LName\", \"user.png\", \"rt\", \"at\", ?)";
 			preparedStatement = (PreparedStatement) r.getConnection().prepareStatement(query);
 			preparedStatement.setDate(1, new Date(117, 10, 27));
 			preparedStatement.executeUpdate();
 		}
 		
-		query = "insert into " + dbname + ".Account values(\"accid1\", \"rt1\", \"at1\", \"username1\", \"ogs\", \"userid\", ?)";
+		query = "insert into Account values(\"accid1\", \"rt1\", \"at1\", \"username1\", \"ogs\", \"userid\", ?)";
 		preparedStatement = (PreparedStatement) r.getConnection().prepareStatement(query);
 		preparedStatement.setDate(1, new Date(117, 10, 27));
 		preparedStatement.executeUpdate();
 		
 		r.deleteUserAccount("userid", "accid1", "ogs");
 		
-		query = "select * from " + dbname + ".Account where (User_id = \"userid\" and id = \"accid1\" and server = \"ogs\")";
+		query = "select * from Account where (User_id = \"userid\" and id = \"accid1\" and server = \"ogs\")";
 		statement = r.getConnection().createStatement();
 		resultSet = statement.executeQuery(query);
 		
 		assertFalse(resultSet.next());
 		
-		query = "delete from " + dbname + ".User where id = \"userid\"";
+		query = "delete from User where id = \"userid\"";
 		statement = r.getConnection().createStatement();
 		statement.executeUpdate(query);
 		
