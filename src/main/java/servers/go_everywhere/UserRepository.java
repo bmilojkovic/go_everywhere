@@ -90,7 +90,7 @@ public class UserRepository implements IUserRepository{
 	public void create(User model) throws SQLException  {
 		// TODO Auto-generated method stub
 		
-		String query = "insert into " + dbname + ".User values(?, ?, ?, ?, ?, ?, ?, ?)";
+		String query = "insert into User values(?, ?, ?, ?, ?, ?, ?, ?)";
 		
 		preparedStatement = connection.prepareStatement(query);
 		
@@ -109,7 +109,7 @@ public class UserRepository implements IUserRepository{
 	@Override
 	public User read(String primaryKey) throws SQLException {
 		
-		String query = "select * from " + dbname + ".User where (id = ?)";
+		String query = "select * from User where (id = ?)";
 		
 		preparedStatement = connection.prepareStatement(query);
 		preparedStatement.setString(1, primaryKey);
@@ -136,7 +136,7 @@ public class UserRepository implements IUserRepository{
 	@Override
 	public void update(User model) throws SQLException{
 		
-		String query = "update " + dbname + ".User set username = ?, firstName = ?, lastName = ?, pictureURL = ?, refreshToken = ?, accessToken = ?, registrationDate = ?  where (id = ?)";
+		String query = "update User set username = ?, firstName = ?, lastName = ?, pictureURL = ?, refreshToken = ?, accessToken = ?, registrationDate = ?  where (id = ?)";
 		preparedStatement = connection.prepareStatement(query);
 		
 		preparedStatement.setString(1, model.getUsername());
@@ -155,13 +155,13 @@ public class UserRepository implements IUserRepository{
 	@Override
 	public void delete(User model) throws SQLException {
 		
-		String query = "delete from " + dbname + ".Account where(User_id = ?)";
+		String query = "delete from Account where(User_id = ?)";
 		preparedStatement = connection.prepareStatement(query);
 		preparedStatement.setString(1, model.getId());
 		
 		preparedStatement.executeUpdate();
 		
-		query = "delete from " + dbname + ".User where(id = ?)";
+		query = "delete from User where(id = ?)";
 		preparedStatement = connection.prepareStatement(query);
 		preparedStatement.setString(1, model.getId());
 		
@@ -173,7 +173,7 @@ public class UserRepository implements IUserRepository{
 	public Collection<User> search(String s) throws SQLException {		
 		
 		ArrayList<User> users = new ArrayList<>();
-		String query = "select * from " + dbname + ".User where username like \"%" + s + "%\" ";
+		String query = "select * from User where username like \"%" + s + "%\" ";
 		
 		preparedStatement = connection.prepareStatement(query);
 		resultSet = preparedStatement.executeQuery();
@@ -200,7 +200,7 @@ public class UserRepository implements IUserRepository{
 		
 		UserAccountFactory uaf = new UserAccountFactory();
 		ArrayList<AbstractUserAccount> accounts = new ArrayList<>();
-		String query = "select * from " + dbname + ".Account where (User_id = ?)";
+		String query = "select * from Account where (User_id = ?)";
 		
 		preparedStatement = connection.prepareStatement(query);
 		preparedStatement.setString(1, id);
@@ -223,7 +223,7 @@ public class UserRepository implements IUserRepository{
 	@Override
 	public void addUserAccount(String userId, AbstractUserAccount userAccount) throws SQLException {
 		// TODO Auto-generated method stub
-		String query = "insert into " + dbname + ".Account values(?, ?, ?, ?, ?, ?,?)";
+		String query = "insert into Account values(?, ?, ?, ?, ?, ?,?)";
 		
 		preparedStatement = connection.prepareStatement(query);
 		
@@ -243,7 +243,7 @@ public class UserRepository implements IUserRepository{
 	public void deleteUserAccount(String userId, String accountId, String serverId) throws SQLException {
 		// TODO Auto-generated method stub
 		
-		String query = "delete from " + dbname + ".Account where(id = ? and User_id = ? and server = ?)";
+		String query = "delete from Account where(id = ? and User_id = ? and server = ?)";
 		
 		preparedStatement = connection.prepareStatement(query);
 		
