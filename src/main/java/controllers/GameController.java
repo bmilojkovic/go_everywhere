@@ -29,7 +29,7 @@ public class GameController {
 	@Consumes("application/json")
 	public String test(AbstractGame game){
 		
-		System.out.println(game.getGameName());
+		//System.out.println(game.getGameName());
 		
 		
 		
@@ -37,16 +37,6 @@ public class GameController {
 		
 		//Nas OGS Rest ce vratiti {"status":"ok","challenge":7144636,"game":10879882}
 		//kakav response vracaju drugi serveri ???
-	}
-	
-	@POST
-	@Path("/TestGame")
-	@Consumes("application/json")
-	public String test2(OGSGame ogame){
-		
-		System.out.println(ogame.getGameName());
-		
-		return ogame.toString();
 	}
 	
 	@GET
