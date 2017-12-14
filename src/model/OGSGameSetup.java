@@ -4,7 +4,7 @@ import org.json.JSONObject;
 
 import model.game.Game;
 
-public class OGSGame extends AbstractGame{
+public class OGSGameSetup extends AbstractGame{
 
 	private boolean initialized;
 	private int min_ranking;
@@ -13,7 +13,7 @@ public class OGSGame extends AbstractGame{
 	private OGSGameInfo game; //field "game" in OGS game object
 	
 	
-	public OGSGame(JSONObject gameObject){
+	public OGSGameSetup(JSONObject gameObject){
 		initialized = gameObject.getBoolean("initialized");
 		min_ranking = gameObject.getInt("min_ranking");
 		max_ranking = gameObject.getInt("max_ranking");
@@ -48,7 +48,7 @@ public class OGSGame extends AbstractGame{
 		
 	}
 	
-	public OGSGame(Game game){
+	public OGSGameSetup(Game game){
 		//TODO implement this shit!!!
 		
 		try{
@@ -60,7 +60,7 @@ public class OGSGame extends AbstractGame{
 		
 	}
 	
-	public OGSGame() {
+	public OGSGameSetup() {
 		super();
 	}
 

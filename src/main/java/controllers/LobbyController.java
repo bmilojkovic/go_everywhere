@@ -4,18 +4,26 @@ import java.io.IOException;
 import java.util.LinkedList;
 import java.util.List;
 
+import javax.ws.rs.Consumes;
 import javax.ws.rs.GET;
+import javax.ws.rs.POST;
 import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
 
 import org.json.JSONArray;
 import org.json.JSONObject;
+
+import com.fasterxml.jackson.core.JsonParseException;
+import com.fasterxml.jackson.databind.JsonMappingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
+
 import model.Chat;
+import model.Lobby;
 import model.OGS;
-import model.OGSGame;
 import model.Room;
 import model.game.Game;
+import model.ogs.game.OGSGame;
 import okhttp3.OkHttpClient;
 import okhttp3.Request;
 import okhttp3.Response;
@@ -23,6 +31,20 @@ import okhttp3.Response;
 @Path("/lobby")
 public class LobbyController {
 
+	
+	@POST
+	@Path("/TEST")
+	@Consumes("application/json")
+	@Produces("application/json")	
+	public OGSGame test(String body) throws JsonParseException, JsonMappingException, IOException{
+		
+		JSONObject obj = new JSONObject(body);
+		ObjectMapper mapper = new ObjectMapper();
+		OGSGame bl = mapper.readValue(obj.toString(),OGSGame.class);
+		
+		return bl;
+	}
+	
 	
 	OkHttpClient httpClient = new OkHttpClient();
 	
@@ -54,9 +76,18 @@ public class LobbyController {
 			List<Game> games = new LinkedList<>();
 			activeGamesArray.forEach(game ->{
 				JSONObject obj = (JSONObject) game;
-				OGSGame ogsGame = new OGSGame(obj);
-				Game newGoEGame = ogsGame.toGame();
-				games.add(newGoEGame);
+				
+				ObjectMapper mapper = new ObjectMapper();
+				
+				try {
+					OGSGame oGame = mapper.readValue(obj.toString(),OGSGame.class);
+					Game newGoEGame = new Game(oGame);
+					games.add(newGoEGame);
+				} catch (IOException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
+				
 			});
 			
 			room.setActive_games(games);
@@ -81,10 +112,16 @@ public class LobbyController {
 			joinedChatsArray.forEach(game ->{
 				JSONObject obj = (JSONObject) game;
 				
-				OGSGame oGame = new OGSGame(obj);
-				Game goEGame = oGame.toGame();
-				games.add(goEGame);
+				ObjectMapper mapper = new ObjectMapper();
 				
+				try{
+					
+					OGSGame oGame = mapper.readValue(obj.toString(),OGSGame.class);
+					Game goEGame = new Game(oGame);
+					games.add(goEGame);
+				}catch(IOException e){
+					e.printStackTrace();
+				}
 			});
 			room.setOpen_games(games);
 			resp.close();
@@ -142,6 +179,7 @@ public class LobbyController {
 		
 	}
 	
+	
 	@GET
 	@Produces("application/json")
 	@Path("/server/{serverID}/acc/{accID}/lobby/{lobbyID}/rooms-to-join")
@@ -184,6 +222,25 @@ public class LobbyController {
 			
 		}
 		return rooms;
+	}
+	
+	@GET
+	@Path("/server/{serverID}/acc/{accID}/lobby/all")
+	public List<Lobby> getAllLobbies(@PathParam("serverID") String serverID,@PathParam("accID") String accID){
+		List<Lobby> lobbies = new LinkedList<>();
+		
+		
+		if(serverID.equals("ogs")){
+			Lobby l = new Lobby();
+			l.setId("ogsID");
+			Room r = new Room();
+			OGSChats(r);
+			lobbies.add(l);
+		}else{
+			
+		}
+		
+		return lobbies;
 	}
 	
 }

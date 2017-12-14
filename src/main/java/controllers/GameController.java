@@ -10,14 +10,16 @@ import javax.ws.rs.POST;
 import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
-import javax.ws.rs.core.Response;
 
 import org.json.JSONArray;
 import org.json.JSONObject;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
+
 import model.AbstractGame;
-import model.OGSGame;
+import model.OGSGameSetup;
 import model.game.Game;
+import model.ogs.game.OGSGame;
 import okhttp3.MediaType;
 import okhttp3.OkHttpClient;
 import okhttp3.Request;
@@ -58,9 +60,19 @@ public class GameController {
 			gameArray.forEach(game->{
 				JSONObject gameObject = (JSONObject) game;
 				
-				OGSGame ogsGame = new OGSGame(gameObject);
-				Game geGame = ogsGame.toGame();
-				games.add(geGame);
+				ObjectMapper mapper = new ObjectMapper();
+				
+				OGSGame ogsGame;
+				try {
+					ogsGame = mapper.readValue(gameObject.toString(),OGSGame.class);
+					Game geGame = new Game(ogsGame);
+					games.add(geGame);	
+				} catch (IOException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
+				
+				
 			});
 			
 			
@@ -86,9 +98,17 @@ public class GameController {
 			gameArray.forEach(game->{
 				JSONObject gameObject = (JSONObject) game;
 				
-				OGSGame ogsGame = new OGSGame(gameObject);
-				Game geGame = ogsGame.toGame();
-				games.add(geGame);
+				ObjectMapper mapper = new ObjectMapper();
+				
+				OGSGame ogsGame;
+				try {
+					ogsGame = mapper.readValue(gameObject.toString(),OGSGame.class);
+					Game geGame = new Game(ogsGame);
+					games.add(geGame);	
+				} catch (IOException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
 			});
 			
 			return games;
@@ -109,16 +129,13 @@ public class GameController {
 		
 		if(serverID.equals("ogs")){
 			//as so just relay the request from frontend to express
-			OGSGame newGame = new OGSGame(game);
+			OGSGameSetup newGame = new OGSGameSetup(game);
 			RequestBody reqBody = RequestBody.create(MediaType.parse("application/json; charset=utf-8"),newGame.toJson().toString());
 			Request request = new Request.Builder().url("http://localhost:4700/api/challenge/create").post(reqBody).build(); 
 			okhttp3.Response response = httpClient.newCall(request).execute();
 			
-			//Dva puta kada se za istog usera pokrene onda ne radi ???
-			
 			
 			return response.body().string();
-			
 		}else{
 			return "-1";
 		}

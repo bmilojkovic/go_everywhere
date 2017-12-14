@@ -2,6 +2,8 @@ package model.game;
 
 import org.json.JSONObject;
 
+import model.ogs.game.OGSGame;
+
 public class Game {
 
 	private Related related;
@@ -13,10 +15,10 @@ public class Game {
 	private String source;
 	private String black;
 	private String white;
-	private String width;
-	private String height;
+	private int width;
+	private int height;
 	private String rules;
-	private String ranked;
+	private boolean ranked;
 	private int handicap;
 	private String komi; //TODO: documentation says string ?
 	private String time_control;
@@ -31,7 +33,8 @@ public class Game {
 	private boolean black_lost;
 	private boolean white_lost;
 	private boolean annulled;
-	
+	private String started;
+	private String ended;
 	
 	public Game(JSONObject game){
 		//TODO IMPLEMENT THIS! U get a json object of Game (actording to specification)
@@ -44,9 +47,73 @@ public class Game {
 		}
 	}
 	
+	public Game(OGSGame game){
+		
+		this.id =""+game.getGameId();
+		this.related = new Related("/api/v1/games/"+this.id);
+		this.players.setBlack(game.getPlayers().getBlack().getUsername());
+		this.players.setWhite(game.getPlayers().getWhite().getUsername());
+		this.name = game.getGameName();
+		this.creator = game.getInitialPlayer();//Starting player ???
+		this.mode = "game";// default ???
+		this.source = game.getPhase();
+		this.black = ""+game.getPlayers().getBlack().getId(); //Until furthure notice we are treating this as ID field
+		this.white = ""+game.getPlayers().getWhite().getId();
+		this.width = (int)game.getWidth();
+		this.height = (int)game.getHeight();
+		this.rules = game.getRules();
+		this.ranked = game.isRanked();
+		this.handicap = (int)game.getHandicap();
+		this.komi = ""+game.getKomi();
+		this.time_control = game.getTimeControl().getTimeControl();
+		this.time_per_move = ""+game.getTimeControl().getTimeIncrement(); //TODO what is time per move ?? 
+		
+		this.time_control_parameters.setTime_control(game.getTimeControl().getTimeControl());
+		this.time_control_parameters.setInitial_time((int)game.getTimeControl().getInitialTime()); //TODO risk of overflowing integer
+		this.time_control_parameters.setMax_time((int)game.getTimeControl().getMaxTime()); //TODO risk of integer overflow
+		this.time_control_parameters.setTime_increment((int)game.getTimeControl().getTimeIncrement());
+		this.disable_analysis = game.isDisableAnalysis();
+		this.tournament = "none"; //TODO for the time being
+		this.tournament_round = -1; //TODO for the time being
+		this.ladder = "none"; //TODO for the time being
+		this.pause_on_weekends = game.isPauseOnWeekends();
+		this.outcome = null; //TODO this ????
+		this.black_lost = false;//TODO this ???
+		this.white_lost = false;// TODO this??
+		this.annulled = false; //TODO ????
+		this.started = ""; //TODO ????
+		this.ended = ""; //TODO ?????
+		
+		try{
+			throw new Exception("Implement me");
+		}catch(Exception e){
+			
+		}
+	}
+	
+	
 	public Game() {
 		super();
 	}
+	
+	
+	
+	public String getStarted() {
+		return started;
+	}
+
+	public void setStarted(String started) {
+		this.started = started;
+	}
+
+	public String getEnded() {
+		return ended;
+	}
+
+	public void setEnded(String ended) {
+		this.ended = ended;
+	}
+
 	public Related getRelated() {
 		return related;
 	}
@@ -101,16 +168,16 @@ public class Game {
 	public void setWhite(String white) {
 		this.white = white;
 	}
-	public String getWidth() {
+	public int getWidth() {
 		return width;
 	}
-	public void setWidth(String width) {
+	public void setWidth(int width) {
 		this.width = width;
 	}
-	public String getHeight() {
+	public int getHeight() {
 		return height;
 	}
-	public void setHeight(String height) {
+	public void setHeight(int height) {
 		this.height = height;
 	}
 	public String getRules() {
@@ -119,10 +186,10 @@ public class Game {
 	public void setRules(String rules) {
 		this.rules = rules;
 	}
-	public String getRanked() {
+	public boolean getRanked() {
 		return ranked;
 	}
-	public void setRanked(String ranked) {
+	public void setRanked(boolean ranked) {
 		this.ranked = ranked;
 	}
 	public int getHandicap() {
