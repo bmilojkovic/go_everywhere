@@ -3,6 +3,7 @@ package model.game;
 import org.json.JSONObject;
 
 import model.ogs.game.OGSGame;
+import model.ogs.game.history.OGSGameHistory;
 
 public class Game {
 
@@ -22,7 +23,7 @@ public class Game {
 	private int handicap;
 	private String komi; //TODO: documentation says string ?
 	private String time_control;
-	private String time_per_move;
+	private long time_per_move;
 	private TimeControlParameters time_control_parameters;
 	private boolean disable_analysis;
 	private String tournament; //TODO: string or number ?
@@ -47,7 +48,59 @@ public class Game {
 		}
 	}
 	
+	
+	public Game(OGSGameHistory gameHistory){
+		
+
+		this.related = new Related();
+		this.players = new GamePlayers();
+		this.time_control_parameters = new TimeControlParameters();
+		
+		
+		this.related.setDetali(gameHistory.getRelated().getDetail());
+		this.players.setWhite(gameHistory.getPlayers().getWhite().getUsername());
+		this.players.setBlack(gameHistory.getPlayers().getBlack().getUsername());
+		this.id = ""+gameHistory.getId();
+		this.name = gameHistory.getName();
+		this.creator = ""+gameHistory.getCreator();
+		this.mode = gameHistory.getMode();
+		this.source = gameHistory.getSource();
+		this.black = ""+gameHistory.getPlayers().getBlack().getId();
+		this.white = ""+gameHistory.getPlayers().getWhite().getId();
+		this.width = gameHistory.getWidth().intValue();
+		this.height = gameHistory.getHeight().intValue();
+		this.rules = gameHistory.getRules();
+		this.ranked = gameHistory.getRanked();
+		this.handicap = gameHistory.getHandicap().intValue();
+		this.komi = gameHistory.getKomi();
+		this.time_control = gameHistory.getTimeControl();
+		this.time_per_move = gameHistory.getTimePerMove();
+		
+		JSONObject timeControl = new JSONObject(gameHistory.getTimeControlParameters());
+		
+		this.time_control_parameters.setTime_control(timeControl.getString("time_control"));
+		this.time_control_parameters.setInitial_time(-1);// unavailable from OGS rest api call
+		this.time_control_parameters.setMax_time(-1);// unavailable from OGS rest api call
+		this.time_control_parameters.setTime_increment(-1);// unavailable from OGS rest api call
+		this.disable_analysis = gameHistory.getDisableAnalysis();
+		this.tournament = null; //specification doesent specify what type this is
+		this.tournament_round = gameHistory.getTournamentRound().intValue();
+		this.ladder = null;//specification doesent specify what type this is
+		this.pause_on_weekends = gameHistory.getPauseOnWeekends();
+		this.outcome = gameHistory.getOutcome();
+		this.black_lost = gameHistory.getBlackLost();
+		this.white_lost = gameHistory.getWhiteLost();
+		this.annulled = gameHistory.getAnnulled();
+		this.started = gameHistory.getStarted();
+		this.ended = gameHistory.getStarted();
+		
+	}
+	
 	public Game(OGSGame game){
+		
+		this.related = new Related();
+		this.players = new GamePlayers();
+		this.time_control_parameters = new TimeControlParameters();
 		
 		this.id =""+game.getGameId();
 		this.related = new Related("/api/v1/games/"+this.id);
@@ -66,7 +119,7 @@ public class Game {
 		this.handicap = (int)game.getHandicap();
 		this.komi = ""+game.getKomi();
 		this.time_control = game.getTimeControl().getTimeControl();
-		this.time_per_move = ""+game.getTimeControl().getTimeIncrement(); //TODO what is time per move ?? 
+		this.time_per_move = game.getTimeControl().getTimeIncrement(); //TODO what is time per move ?? 
 		
 		this.time_control_parameters.setTime_control(game.getTimeControl().getTimeControl());
 		this.time_control_parameters.setInitial_time((int)game.getTimeControl().getInitialTime()); //TODO risk of overflowing integer
@@ -210,10 +263,10 @@ public class Game {
 	public void setTime_control(String time_control) {
 		this.time_control = time_control;
 	}
-	public String getTime_per_move() {
+	public long getTime_per_move() {
 		return time_per_move;
 	}
-	public void setTime_per_move(String time_per_move) {
+	public void setTime_per_move(long time_per_move) {
 		this.time_per_move = time_per_move;
 	}
 	public TimeControlParameters getTime_control_parameters() {
