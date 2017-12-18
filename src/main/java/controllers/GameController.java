@@ -20,6 +20,7 @@ import model.AbstractGame;
 import model.OGSGameSetup;
 import model.game.Game;
 import model.ogs.game.OGSGame;
+import model.ogs.game.challenges.OGSChallenge;
 import model.ogs.game.history.OGSGameHistory;
 import okhttp3.MediaType;
 import okhttp3.OkHttpClient;
@@ -36,9 +37,9 @@ public class GameController {
 	
 	/**
 	 * Gets games from node expres
-	 * @param games
-	 * @param path
-	 * @param accID
+	 * @param games list to which the games will be stored
+	 * @param path either inProgress or openGames
+	 * @param accID represents the user
 	 * @throws IOException
 	 */
 	public void getGames(List<Game> games,String path,String accID) throws IOException{
@@ -65,6 +66,29 @@ public class GameController {
 		});
 	}
 	
+	public void getChallanges(List<Game> games,String accID) throws IOException{
+		Request req = new Request.Builder().url("http://localhost:4700/api/challenge/openGames/"+accID).build();
+		okhttp3.Response res = httpClient.newCall(req).execute();
+		
+		
+		JSONArray gameArray = new JSONArray(res.body().string());
+		
+		gameArray.forEach(game->{
+			JSONObject gameObject = (JSONObject) game;
+			
+			ObjectMapper mapper = new ObjectMapper();
+			
+			OGSChallenge ogsGame;
+			try {
+				ogsGame = mapper.readValue(gameObject.toString(),OGSChallenge.class);
+				Game geGame = new Game(ogsGame);
+				games.add(geGame);	
+			} catch (IOException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+		});
+	}
 	
 	@POST
 	@Consumes("application/json")
@@ -88,7 +112,7 @@ public class GameController {
 		
 		if(serverID.equals("ogs")){
 
-			getGames(games,"openGames",accID);
+			getChallanges(games, accID);
 			
 			
 		}else{
@@ -119,7 +143,6 @@ public class GameController {
 	@Path("server/{serverID}/acc/{accID}/lobby/{lobbyID}/room/{roomID}/post-game")
 	@Consumes("application/json")
 	public String postGame(Game game,@PathParam("serverID") String serverID,@PathParam("accID") String accID,@PathParam("lobbyID") String lobbyID, @PathParam("roomID") String roomID) throws IOException{
-		String id="";
 		
 		if(serverID.equals("ogs")){
 			//as so just relay the request from frontend to express
@@ -145,7 +168,7 @@ public class GameController {
 		if(serverID.equals("ogs")){
 			
 			 getGames(games, "inProgress", accID);
-			 getGames(games,"openGames",accID);
+			 getChallanges(games, accID);
 			
 		}else{
 			
@@ -245,7 +268,20 @@ public class GameController {
 		return g;
 	}
 	
-	
+	//returns raw OGS object
+	@GET
+	@Path("/server/{serverID}/lobby/{lobbyID}/room/{roomID}/game/{gameID}/estimate")
+	@Produces("application/json")
+	public String getEstimatedScore(String body,@PathParam("serverID") String serverID,@PathParam("lobbyID") String lobbyID, @PathParam("roomID") String roomID,@PathParam("gameID") String gameID){
+
+		if(serverID.equals("ogs")){
+			return body;
+		}else{
+			
+		}
+		
+		return null;
+	}
 	
 	
 }

@@ -3,6 +3,7 @@ package model.game;
 import org.json.JSONObject;
 
 import model.ogs.game.OGSGame;
+import model.ogs.game.challenges.OGSChallenge;
 import model.ogs.game.history.OGSGameHistory;
 
 public class Game {
@@ -37,17 +38,25 @@ public class Game {
 	private String started;
 	private String ended;
 	
-	public Game(JSONObject game){
-		//TODO IMPLEMENT THIS! U get a json object of Game (actording to specification)
-		
-		
-		try{
-			throw new Exception("Implement me !!");
-		}catch(Exception e){
-			
-		}
-	}
 	
+	public Game(OGSChallenge challenge){
+		
+		time_per_move = challenge.getTimePerMove().longValue();
+		creator = challenge.getUsername();
+		id = challenge.getGameId().toString();
+		width = challenge.getWidth();
+		handicap = challenge.getHandicap();
+		name = challenge.getName();
+		disable_analysis = challenge.getDisableAnalysis();
+		height = challenge.getHeight();
+		rules = challenge.getRules();
+		time_control = challenge.getTimeControl();
+		ranked = challenge.getRanked();
+		komi = challenge.getKomi();
+		time_control_parameters.setTime_control(challenge.getTimeControlParameters().getTimeControl());
+		this.pause_on_weekends = challenge.getTimeControlParameters().getPauseOnWeekends();
+		
+	}
 	
 	public Game(OGSGameHistory gameHistory){
 		
